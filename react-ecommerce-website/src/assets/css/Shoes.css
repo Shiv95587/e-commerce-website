@@ -1,0 +1,6 @@
+.shop-single .product-details .post-content form .color {
+  width: 48%;
+  display: flex;
+  align-content: center;
+  transform: translateY(-20%);
+}
