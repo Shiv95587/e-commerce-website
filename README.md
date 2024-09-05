@@ -13,18 +13,20 @@ ShopCart is a modern e-commerce web application built with React.js, Node.js, Ex
 
 ## Tech Stack
 
-- **Frontend**: React.js
+- **Frontend**: React.js, Bootstrap CSS
 - **Backend**: Node.js, Express.js
 - **Database**: MySQL
+
+## Prerequisites
+
+- Node.js
+- MySQL
+- React.js
+- Bootstrap CSS
 
 ## Installation
 
 To run this project locally, follow these steps:
-
-### Prerequisites
-
-- Node.js
-- MySQL
 
 ### Steps
 
