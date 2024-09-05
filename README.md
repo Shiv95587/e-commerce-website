@@ -33,5 +33,5 @@ To run this project locally, follow these steps:
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/your-username/shopcart.git
-   cd shopcart
+   https://github.com/Shiv95587/e-commerce-website.git
+   cd react-ecommerce-website
