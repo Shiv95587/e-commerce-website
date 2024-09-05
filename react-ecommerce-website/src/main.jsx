@@ -23,6 +23,8 @@ import SignUp from "./components/SignUp.jsx";
 import OrdersPage from "./orders/OrdersPage.jsx";
 import AuthProvider from "./Contexts/AuthProvider.jsx";
 import PrivateRoute from "./PrivateRoute/PrivateRoute.jsx";
+import About from "./about/About.jsx";
+import Contact from "./contact/Contact.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -42,8 +44,10 @@ const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
+      { path: "/about", element: <About /> },
       { path: "/cart-page", element: <CartPage /> },
       { path: "/admin", element: <Admin /> },
+      { path: "/contact", element: <Contact /> },
       {
         path: "/shop/cart-page",
         element: (
