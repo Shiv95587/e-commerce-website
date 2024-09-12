@@ -150,6 +150,7 @@ function Shoe({ items }) {
                 if (/[^0-9]/.test(e.target.value)) return;
                 setQuantity(e.target.value, 10);
               }}
+              width={"100%"}
             />
             <div className="inc qtybutton" onClick={handleIncrease}>
               +

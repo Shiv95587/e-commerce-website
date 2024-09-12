@@ -1,0 +1,11 @@
+.full-width {
+  flex: 0 0 100%; /* Full width for the third item */
+}
+
+.select-product-full {
+  width: 100%;
+}
+
+.select-product-full select {
+  text-align: center;
+}

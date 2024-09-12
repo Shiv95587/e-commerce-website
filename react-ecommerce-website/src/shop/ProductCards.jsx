@@ -1,6 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 function ProductCards({ GridList, products }) {
+  function getCategoryName(category) {
+    return category.substring(0, 1).toLowerCase() + category.substring(1);
+  }
   return (
     <div>
       <div
@@ -19,7 +22,11 @@ function ProductCards({ GridList, products }) {
 
                 {/* product action links */}
                 <div className="product-action-link">
-                  <Link to={`/shop/${product.PRODUCT_ID}`}>
+                  <Link
+                    to={`/shop/${getCategoryName(product.PRODUCT_CATEGORY)}/${
+                      product.PRODUCT_ID
+                    }`}
+                  >
                     <i className="icofont-eye"></i>
                   </Link>
                   {/* <a href="#">
@@ -33,10 +40,15 @@ function ProductCards({ GridList, products }) {
 
               <div className="product-content">
                 <h5>
-                  <Link to={`/shop/${product.PRODUCT_ID}`}>
+                  <Link
+                    to={`/shop/${getCategoryName(product.PRODUCT_CATEGORY)}/${
+                      product.PRODUCT_ID
+                    }`}
+                  >
                     {product.PRODUCT_TITLE}
                   </Link>
                 </h5>
+                {/* TODO: Add Rating Feature */}
                 <p className="productRating">Rating</p>
                 <h6>${product.PRODUCT_PRICE}</h6>
               </div>
@@ -55,9 +67,9 @@ function ProductCards({ GridList, products }) {
                   <Link to={`/shop/${product.PRODUCT_ID}`}>
                     <i className="icofont-eye"></i>
                   </Link>
-                  <a href="#">
+                  {/* <a href="#">
                     <i className="icofont-heart"></i>
-                  </a>
+                  </a> */}
                   <Link to={`/cart-page`}>
                     <i className="icofont-cart-alt"></i>
                   </Link>
@@ -66,8 +78,11 @@ function ProductCards({ GridList, products }) {
 
               <div className="product-content">
                 <h5>
-                  <Link to={`/shop/${product.PRODUCT_ID}`}></Link>
+                  <Link to={`/shop/${product.PRODUCT_ID}`}>
+                    {product.PRODUCT_TITLE}
+                  </Link>
                 </h5>
+                {/* TODO: Add Rating Feature */}
                 <p className="productRating">Rating</p>
                 <h6>${product.PRODUCT_PRICE}</h6>
               </div>

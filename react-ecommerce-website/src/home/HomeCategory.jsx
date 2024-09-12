@@ -5,42 +5,65 @@ const title = "Buy Everything with Us";
 const btnText = "Get Started Now";
 
 const categoryList = [
+  // {
+  //   imgUrl: "src/assets/images/category/01.jpg",
+  //   imgAlt: "category rajibraj91 rajibraj",
+  //   iconName: "icofont-brand-windows",
+  //   title: "DSLR Camera",
+  // },
   {
-    imgUrl: "src/assets/images/category/01.jpg",
-    imgAlt: "category rajibraj91 rajibraj",
+    imgUrl: "src/assets/images/category/shirts.jpg",
+    imgAlt: "Category Shirts",
     iconName: "icofont-brand-windows",
-    title: "DSLR Camera",
+    title: "Shirts",
+    categoryName: "shirts",
   },
   {
     imgUrl: "src/assets/images/category/02.jpg",
     imgAlt: "category rajibraj91 rajibraj",
     iconName: "icofont-brand-windows",
     title: "Shoes",
+    categoryName: "shoes",
+  },
+  // {
+  //   imgUrl: "src/assets/images/category/03.jpg",
+  //   imgAlt: "category rajibraj91 rajibraj",
+  //   iconName: "icofont-brand-windows",
+  //   title: "Photography",
+  // },
+  {
+    imgUrl: "src/assets/images/category/pants.jpg",
+    imgAlt: "Category Pants",
+    iconName: "icofont-brand-windows",
+    title: "Pants",
+    categoryName: "pants",
   },
   {
-    imgUrl: "src/assets/images/category/03.jpg",
-    imgAlt: "category rajibraj91 rajibraj",
+    imgUrl: "src/assets/images/category/caps.jpg",
+    imgAlt: "Category Pants",
     iconName: "icofont-brand-windows",
-    title: "Photography",
+    title: "Caps",
+    categoryName: "caps",
   },
-  {
-    imgUrl: "src/assets/images/category/04.jpg",
-    imgAlt: "category rajibraj91 rajibraj",
-    iconName: "icofont-brand-windows",
-    title: "Formal Dress",
-  },
+  // {
+  //   imgUrl: "src/assets/images/category/04.jpg",
+  //   imgAlt: "category rajibraj91 rajibraj",
+  //   iconName: "icofont-brand-windows",
+  //   title: "Formal Dress",
+  // },
   {
     imgUrl: "src/assets/images/category/05.jpg",
     imgAlt: "category rajibraj91 rajibraj",
     iconName: "icofont-brand-windows",
-    title: "Colorful Bags",
+    title: "Bags",
+    categoryName: "bags",
   },
-  {
-    imgUrl: "src/assets/images/category/06.jpg",
-    imgAlt: "category rajibraj91 rajibraj",
-    iconName: "icofont-brand-windows",
-    title: "Home Decor",
-  },
+  // {
+  //   imgUrl: "src/assets/images/category/06.jpg",
+  //   imgAlt: "category rajibraj91 rajibraj",
+  //   iconName: "icofont-brand-windows",
+  //   title: "Home Decor",
+  // },
 ];
 
 function HomeCategory() {
@@ -58,7 +81,10 @@ function HomeCategory() {
           <div className="row g-4 justify-content-center row-cols-md-3 row-cols-sm-2 row-cols-1">
             {categoryList.map((category, index) => (
               <div key={index} className="col">
-                <Link to="/shop" className="category-item">
+                <Link
+                  to={`/shop/${category.categoryName}`}
+                  className="category-item"
+                >
                   <div className="category-inner">
                     {/* Image of category */}
                     <div className="category-thumb">
@@ -70,7 +96,7 @@ function HomeCategory() {
                       <div className="cate-icon">
                         <i className={category.iconName}></i>
                       </div>
-                      <Link to={"/shop"}>
+                      <Link to={`/shop/${category.categoryName}`}>
                         <h6>{category.title}</h6>
                       </Link>
                     </div>

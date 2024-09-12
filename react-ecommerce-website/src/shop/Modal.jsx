@@ -18,7 +18,8 @@ export default function Modal({ setError }) {
               id="errorModalLabel"
               style={{ color: "white" }}
             >
-              {/* Error */} Insufficient Quantity
+              {/* Error */}
+              Error Occurred.
             </h5>
             <button
               type="button"
@@ -28,7 +29,7 @@ export default function Modal({ setError }) {
             ></button>
           </div>
           <div className="modal-body">
-            <p>An error occurred. Please try again later.</p>
+            <p>Insufficient Quantity, Please choose a lesser number</p>
           </div>
           <div className="modal-footer">
             <button

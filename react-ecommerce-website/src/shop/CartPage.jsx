@@ -183,7 +183,12 @@ function CartPage() {
 
                       <td className="cat-price">$ {item.price}</td>
                       <td className="cat-quantity">
-                        <div className="cart-plus-minus">
+                        <div
+                          className="cart-plus-minus"
+                          style={{
+                            width: "120px",
+                          }}
+                        >
                           <div
                             className="dec qtybutton"
                             onClick={() => handleDecrease(item)}

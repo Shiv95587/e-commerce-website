@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import PageHeader from "../components/PageHeader";
 import data from "../products.json";
 import ProductCards from "./ProductCards";
@@ -6,13 +6,38 @@ import Search from "./Search";
 import ShopCategory from "./ShopCategory";
 import Pagination from "./Pagination.jsx";
 import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
+import categoriesData from "../categories.json";
+
 function Shop({ someprops }) {
   console.log("Somepo\n");
   console.log(someprops);
   const [GridList, setGridList] = useState(true);
+  const navigate = useNavigate();
+  // const [searchParams, setSearchParams] = useSearchParams();
+  // console.log("Category is:", searchParams.get("category"));
+
+  const { category } = useParams();
 
   const [data, setData] = useState([]);
   const [products, setProducts] = useState(data);
+
+  // Validate category
+  useEffect(() => {
+    console.log("PArams: ", category);
+    if (!category) return;
+
+    if (
+      categoriesData.every(
+        (categoryData) =>
+          categoryData.category.toUpperCase() !== category.toUpperCase()
+      )
+    ) {
+      navigate("/404", { replace: true });
+    }
+  }, [category, navigate]);
+
+  // Fetch All Products
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -49,23 +74,33 @@ function Shop({ someprops }) {
   const [selectedCategory, setSelectedCategory] = useState("All");
   // const menuItems = [...new Set(data.map((product) => product.category))];
   const menuItems = ["Shirts", "Shoes", "Pants", "Bags", "Caps"];
+  const filterItem = useCallback(
+    (curcat) => {
+      if (curcat === "All") {
+        setSelectedCategory(curcat);
+        setProducts(data);
+        return;
+      } else {
+        const items = data.filter(
+          (product) =>
+            product.PRODUCT_CATEGORY.toLowerCase() === curcat.toLowerCase()
+        );
 
-  function filterItem(curcat) {
-    if (curcat === "All") {
-      setSelectedCategory(curcat);
-      setProducts(data);
-      return;
-    } else {
-      const items = data.filter(
-        (product) =>
-          product.PRODUCT_CATEGORY.toLowerCase() === curcat.toLowerCase()
-      );
+        setSelectedCategory(curcat);
+        setCurrentPage(1);
+        setProducts(items);
+      }
+    },
+    [data]
+  );
 
-      setSelectedCategory(curcat);
-      setCurrentPage(1);
-      setProducts(items);
-    }
-  }
+  useEffect(() => {
+    if (!category) return;
+    const currentCategory =
+      category.substring(0, 1).toUpperCase() + category.substring(1);
+    console.log("Current Category:", currentCategory);
+    filterItem(currentCategory);
+  }, [filterItem, category]);
 
   return (
     <div>

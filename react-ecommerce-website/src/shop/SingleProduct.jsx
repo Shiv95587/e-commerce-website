@@ -10,6 +10,8 @@ import "swiper/css";
 import ProductDisplay from "./ProductDisplay";
 import Review from "./Review";
 import axios from "axios";
+import SingleProductDisplay from "./SingleProductDisplay";
+import ErrorNotFound from "../not-found";
 
 // SwiperCore.use([AutoPlay]);
 
@@ -20,33 +22,42 @@ function SingleProduct() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Replace the URL with the actual endpoint you want to request
         const apiUrl = `http://localhost:5000/api/products/${id}`;
         const response = await axios.get(apiUrl);
-
-        // console.log("length is ", response.data.length);
-        console.log("res is " + response);
+        console.log("res is " + response.data);
         setProduct(response.data);
-        // Handle the successful response
       } catch (error) {
         // Handle errors
         console.log(error);
       }
     };
 
-    fetchData(); // Call the async function
-  }, [id]); // The empty dependency array ensures that the effect runs once after the initial render
+    fetchData();
+  }, [id]);
 
-  // finding the category of item with given id
   const result = product;
-  // const category = result[0].category;
-  console.log(result);
+  if (result.length === 0) return <ErrorNotFound />;
+  console.log("product: ", result);
+  // finding the category of item with given id
+  const category = result[0]?.PRODUCT_CATEGORY;
+  console.log("Cat", category);
+
+  const isAllowedCategory = (category) => {
+    if (!category) return;
+    return (
+      category === "Shoes" ||
+      category === "Bags" ||
+      category === "Caps" ||
+      category === "Pants" ||
+      category === "Shirts"
+    );
+  };
 
   return (
     <div>
       <PageHeader
         title={"OUR SHOP SINGLE"}
-        currentPage={"shop/single-product"}
+        currentPage={"shop / single-product"}
       />
 
       <div className="shop-single padding-tb aside-bg">
@@ -85,26 +96,32 @@ function SingleProduct() {
                             ))}
                           </Swiper>
 
-                          <div className="pro-single-next">
+                          {/* <div className="pro-single-next">
                             <i className="icofont-rounded-left"></i>
                           </div>
 
                           <div className="pro-single-prev">
                             <i className="icofont-rounded-right"></i>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                     </div>
                     <div className="col-md-6 col-12">
                       <div className="post-content">
                         <div>
-                          {typeof result[0] !== "undefined" && (
-                            <ProductDisplay
-                              key={result[0].PRODUCT_ID}
-                              items={result}
-                              category={result[0].PRODUCT_CATEGORY}
-                            />
-                          )}
+                          {typeof result[0] !== "undefined" &&
+                            // <ProductDisplay
+                            //   key={result[0].PRODUCT_ID}
+                            //   items={result}
+                            //   category={result[0].PRODUCT_CATEGORY}
+                            // />
+                            isAllowedCategory(category) && (
+                              <SingleProductDisplay
+                                key={result[0].PRODUCT_ID}
+                                items={result}
+                                category={result[0].PRODUCT_CATEGORY}
+                              />
+                            )}
                         </div>
                       </div>
                     </div>

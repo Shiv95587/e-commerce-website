@@ -112,17 +112,7 @@ router.put("/update/:id", async (req, res) => {
     if (result.length === 0) {
       res.status(404).json({ message: "Item not found" });
     } else {
-      // const [[data]] = await db.promise()
-      //   .query(`SELECT * FROM PRODUCTS JOIN ${category} ON \
-      // ${category.toUpperCase()}.PRODUCT_ID = PRODUCTS.PRODUCT_ID WHERE ${category
-      //   .toUpperCase()
-      //   .slice(0, -1)}_SIZE = ${size}
-      //   AND PRODUCTS.PRODUCT_ID = ${productId}
-      // `);
-
       const tableName = category.toUpperCase();
-
-      // let data;
       if (tableName === "BAGS" || tableName === "CAPS") {
         const data = await db
           .promise()
@@ -138,10 +128,7 @@ router.put("/update/:id", async (req, res) => {
         const data = await db
           .promise()
           .query(
-            `UPDATE ${tableName} SET QUANTITY = QUANTITY - ${quantity} WHERE PRODUCT_ID = ${productId} AND ${tableName.slice(
-              0,
-              -1
-            )}_SIZE = ${
+            `UPDATE ${tableName} SET QUANTITY = QUANTITY - ${quantity} WHERE PRODUCT_ID = ${productId} AND SIZE = ${
               tableName !== "SHIRTS" ? size : `${size}`
             } AND QUANTITY >= ${quantity}`
           );
@@ -306,7 +293,7 @@ router.post("/add-pant", async (req, res) => {
       const [result2] = await db
         .promise()
         .query(
-          `INSERT INTO Pants (PRODUCT_ID, COLOR, PANT_SIZE, QUANTITY) VALUES (?,?,?,?)`,
+          `INSERT INTO Pants (PRODUCT_ID, COLOR, SIZE, QUANTITY) VALUES (?,?,?,?)`,
           [productId, color, size[i], quantity[i]]
         );
     }
@@ -364,7 +351,7 @@ router.post("/add-shirt", async (req, res) => {
       const [result2] = await db
         .promise()
         .query(
-          `INSERT INTO Shirts (PRODUCT_ID, COLOR, SHIRT_SIZE, QUANTITY) VALUES (?,?,?,?)`,
+          `INSERT INTO Shirts (PRODUCT_ID, COLOR, SIZE, QUANTITY) VALUES (?,?,?,?)`,
           [productId, color, size[i], quantity[i]]
         );
     }
@@ -423,7 +410,7 @@ router.post("/add-shoe", async (req, res) => {
       const [result2] = await db
         .promise()
         .query(
-          `INSERT INTO SHOES (PRODUCT_ID, COLOR, SHOE_SIZE, QUANTITY) VALUES (?,?,?,?)`,
+          `INSERT INTO SHOES (PRODUCT_ID, COLOR, SIZE, QUANTITY) VALUES (?,?,?,?)`,
           [productId, color, size[i], quantity[i]]
         );
     }

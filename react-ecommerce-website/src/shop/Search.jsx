@@ -42,7 +42,11 @@ function Search({ products, GridList }) {
 
                 <div className="product-content">
                   <p>
-                    <Link to={`/shop/${product.PRODUCT_ID}`}>
+                    <Link
+                      to={`/shop/${product.PRODUCT_CATEGORY.toLowerCase()}/${
+                        product.PRODUCT_ID
+                      }`}
+                    >
                       {product.PRODUCT_TITLE}
                     </Link>
                   </p>

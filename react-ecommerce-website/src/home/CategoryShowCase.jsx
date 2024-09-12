@@ -126,7 +126,9 @@ function CategoryShowCase() {
                     </div>
 
                     <div className="course-content">
-                      <Link to={`/shop/${product.id}`}>
+                      <Link
+                        to={`/shop/${product.cate.toLowerCase()}/${product.id}`}
+                      >
                         <h6>{product.title}</h6>
                       </Link>
                       <div className="course-footer">

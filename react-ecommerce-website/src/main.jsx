@@ -33,6 +33,7 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       { path: "/", element: <Home /> },
+      { path: "/404", element: <ErrorNotFound /> },
       // { path: "/blog", element: <Blog /> },
       {
         path: "/shop",
@@ -40,13 +41,25 @@ const router = createBrowserRouter([
       },
       { path: "*", element: <ErrorNotFound /> },
       {
-        path: "shop/:id",
+        path: "shop/:category",
+        element: <Shop />,
+      },
+      {
+        path: "shop/:category/:id",
         element: (
           <PrivateRoute>
             <SingleProduct />
           </PrivateRoute>
         ),
       },
+      // {
+      //   path: "shop/:id",
+      //   element: (
+      //     <PrivateRoute>
+      //       <SingleProduct />
+      //     </PrivateRoute>
+      //   ),
+      // },
       {
         path: "/cancel",
         element: (

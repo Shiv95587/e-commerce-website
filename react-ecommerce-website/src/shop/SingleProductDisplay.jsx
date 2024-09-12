@@ -1,13 +1,10 @@
-import React, { useContext } from "react";
-import { useState } from "react";
-import "../assets/css/Cap.css";
-import { Link } from "react-router-dom";
+import { useContext, useEffect, useRef, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import { AuthContext } from "../Contexts/AuthProvider";
-import Modal from "./Modal";
 import axios from "axios";
-const desc = "Caps";
-
-function Cap({ items }) {
+import Modal from "./Modal";
+import "./temp.css";
+export default function SingleProductDisplay({ items, category }) {
   const {
     PRODUCT_ID: id,
     PRODUCT_TITLE: name,
@@ -15,18 +12,28 @@ function Cap({ items }) {
     PRODUCT_PRICE: price,
     ratingsCount,
   } = items[0];
-
-  const [error, setError] = useState(0);
+  // DB DATA
   const colors = [...new Set(items.map((item) => item.COLOR))];
+  const sizes = items.map((item) => item.SIZE);
+  console.log(`Category: ${category}, sizes: ${sizes}`);
+  const quantities = items.map((item) => item.QUANTITY);
 
-  const { email } = useContext(AuthContext);
-  const quantities = items[0].QUANTITY;
-
+  // STATES
   const [prequantity, setQuantity] = useState(0);
-  const [coupon, setCoupon] = useState("");
+  //   TODO: Implement discount/coupon functionality
+  //   const [coupon, setCoupon] = useState("");
   const [size, setSize] = useState("Select Size");
+  const [error, setError] = useState(0);
   const [color, setColor] = useState("Select Color");
+  const { email } = useContext(AuthContext);
+  const [desc, setDesc] = useState("");
 
+  // Effects
+  useEffect(() => {
+    setDesc(category);
+  }, [category]);
+
+  // Event Handlers
   function handleSizeChange(e) {
     setSize(e.target.value);
   }
@@ -38,12 +45,29 @@ function Cap({ items }) {
   function handleDecrease(e) {
     if (prequantity > 1) setQuantity((prequantity) => prequantity - 1);
   }
+
   function handleIncrease(e) {
     setQuantity((prequantity) => prequantity + 1);
   }
 
+  function hasSize(category) {
+    return (
+      category === "Shoes" || category === "Pants" || category === "Shirts"
+    );
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
+
+    // Validation
+    if (
+      color === "Select Color" ||
+      prequantity === 0 ||
+      (hasSize(category) && size === "Select Size")
+    ) {
+      alert("fill all fields");
+      return;
+    }
 
     const res = await axios.get(`http://localhost:5000/api/products/${id}`);
     console.log("Data: ", res.data[0]);
@@ -56,10 +80,9 @@ function Cap({ items }) {
         name: name,
         price: price,
         quantity: prequantity,
-        size: size,
+        ...(size === "Select Size" ? {} : { size }),
         color: color,
-        category: "Caps",
-        coupon,
+        category: category,
       };
 
       const existingCart = JSON.parse(localStorage.getItem(email)) || [];
@@ -82,7 +105,7 @@ function Cap({ items }) {
       setQuantity(0);
       setSize("Select Size");
       setColor("Select Color");
-      setCoupon("");
+      //   setCoupon("");
       setError(0);
     }
   }
@@ -90,6 +113,7 @@ function Cap({ items }) {
   return (
     <div>
       <div>
+        {" "}
         <h4>{name}</h4>
         <p className="rating">
           <i className="icofont-star"></i>
@@ -100,15 +124,27 @@ function Cap({ items }) {
           <span>{ratingsCount}</span>
         </p>
         <h4>${price}</h4>
-
         <p>{desc}</p>
       </div>
-
       {/* Cart components */}
-
       <div>
         <form onSubmit={handleSubmit}>
-          <div className="select-product">
+          {hasSize(category) && (
+            <div className="select-product size">
+              <select value={size} onChange={handleSizeChange}>
+                <option>Select Size</option>
+                {sizes.map((s) => (
+                  <option key={s}>{s}</option>
+                ))}
+              </select>
+              <i className="icofont-rounded-down"></i>
+            </div>
+          )}
+          <div
+            className={`select-product ${
+              !hasSize(category) ? "select-product-full" : ""
+            }`}
+          >
             <select value={color} onChange={handleColorChange}>
               <option>Select Color</option>
               {colors.map((color) => (
@@ -117,45 +153,27 @@ function Cap({ items }) {
             </select>
             <i className="icofont-rounded-down"></i>
           </div>
-
-          <div className="select-product size">
-            {/* <select value={size} onChange={handleSizeChange}>
-              <option>Select Size</option>
-
-              {sizes.map((s) => (
-                <option key={s}>{s}</option>
-              ))}
-            </select> */}
-            {/* <i className="icofont-rounded-down"></i> */}
-          </div>
-
           <div className="cart-plus-minus">
             <div className="dec qtybutton" onClick={handleDecrease}>
               -
             </div>
             <input
               type="text"
-              className="cart-plus-minus-box"
+              className="cart-plus-minus-box full-width"
               name="qtybutton"
               id="qtybutton"
               value={prequantity}
-              onChange={(e) => setQuantity(e.target.value, 10)}
+              onChange={(e) => {
+                if (/[^0-9]/.test(e.target.value)) return;
+                setQuantity(e.target.value, 10);
+              }}
             />
             <div className="inc qtybutton" onClick={handleIncrease}>
               +
             </div>
           </div>
           {error === 1 && <Modal setError={setError} />}
-          <div className="discount-code mb-2">
-            <input
-              type="text"
-              placeholder="Enter Discount Code"
-              value={coupon}
-              onChange={(e) => setCoupon(e.target.value)}
-            />
-          </div>
 
-          {/* btn section */}
           <button type="submit" className="lab-btn">
             <span>Add to Cart</span>
           </button>
@@ -167,5 +185,3 @@ function Cap({ items }) {
     </div>
   );
 }
-
-export default Cap;
