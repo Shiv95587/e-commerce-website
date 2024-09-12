@@ -1,7 +1,12 @@
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../Contexts/AuthProvider";
+import axios from "axios";
+import Modal from "./Modal";
 // import "../assets/css/Shoes.css";
+
+// ERRORS CODES:
+// "1: Insufficient Quantity"
 
 const desc = "Shoes";
 function Shoe({ items }) {
@@ -13,6 +18,8 @@ function Shoe({ items }) {
     PRODUCT_PRICE: price,
     ratingsCount,
   } = items[0];
+
+  const [error, setError] = useState(0);
 
   const { email } = useContext(AuthContext);
 
@@ -41,46 +48,53 @@ function Shoe({ items }) {
     setQuantity((prequantity) => prequantity + 1);
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
-    const product = {
-      id: id,
-      img: img,
-      name: name,
-      price: price,
-      quantity: prequantity,
-      size: size,
-      color: color,
-      category: "Shoes",
-      coupon,
-    };
-
-    const existingCart = JSON.parse(localStorage.getItem(email)) || [];
-
-    console.log(existingCart);
-    const existingProductIndex = existingCart.findIndex(
-      (item) => item.id === id
-    );
-
-    if (existingProductIndex !== -1) {
-      existingCart[existingProductIndex].quantity += prequantity;
+    const res = await axios.get(`http://localhost:5000/api/products/${id}`);
+    console.log("Data: ", res.data[0]);
+    if (prequantity > res.data[0].QUANTITY) {
+      setError(1);
     } else {
-      existingCart.push(product);
+      const product = {
+        id: id,
+        img: img,
+        name: name,
+        price: price,
+        quantity: prequantity,
+        size: size,
+        color: color,
+        category: "Shoes",
+        coupon,
+      };
+
+      const existingCart = JSON.parse(localStorage.getItem(email)) || [];
+
+      console.log(existingCart);
+      const existingProductIndex = existingCart.findIndex(
+        (item) => item.id === id
+      );
+
+      if (existingProductIndex !== -1) {
+        existingCart[existingProductIndex].quantity += prequantity;
+      } else {
+        existingCart.push(product);
+      }
+
+      console.log(existingCart);
+
+      localStorage.setItem(email, JSON.stringify(existingCart));
+
+      setQuantity(0);
+      setSize("Select Size");
+      setColor("Select Color");
+      setCoupon("");
+      setError(0);
     }
-
-    console.log(existingCart);
-
-    localStorage.setItem(email, JSON.stringify(existingCart));
-
-    setQuantity(0);
-    setSize("Select Size");
-    setColor("Select Color");
-    setCoupon("");
   }
 
   return (
-    <div>
+    <div id="single-product-display">
       <div>
         <h4>{name}</h4>
         <p className="rating">
@@ -132,12 +146,16 @@ function Shoe({ items }) {
               name="qtybutton"
               id="qtybutton"
               value={prequantity}
-              onChange={(e) => setQuantity(e.target.value, 10)}
+              onChange={(e) => {
+                if (/[^0-9]/.test(e.target.value)) return;
+                setQuantity(e.target.value, 10);
+              }}
             />
             <div className="inc qtybutton" onClick={handleIncrease}>
               +
             </div>
           </div>
+          {error === 1 && <Modal setError={setError} />}
 
           <div className="discount-code mb-2">
             <input
@@ -145,6 +163,7 @@ function Shoe({ items }) {
               placeholder="Enter Discount Code"
               value={coupon}
               onChange={(e) => setCoupon(e.target.value)}
+              hidden
             />
           </div>
 

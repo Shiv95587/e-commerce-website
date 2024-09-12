@@ -80,7 +80,7 @@ function Admin() {
                           }}
                           id="controllable-states-demo"
                           options={options}
-                          sx={{ width: 300 }}
+                          sx={{ width: 330 }}
                           renderInput={(params) => (
                             <TextField {...params} label="Select a Category" />
                           )}
@@ -96,7 +96,6 @@ function Admin() {
                       </div>
                     </form>
                   </div>
-                  <div className="col-8 col-12">Hello</div>
                 </div>
               )}
               {selectedBtn === "Search" && (

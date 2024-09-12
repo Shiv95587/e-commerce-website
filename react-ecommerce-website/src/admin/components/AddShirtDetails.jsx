@@ -28,7 +28,6 @@ function AddShirtDetails() {
     // parsing quantities
     const qty = quantity.split(",").map((item) => Number(item));
     console.log(qty);
-
     const data = {
       title,
       size: s,
@@ -36,6 +35,7 @@ function AddShirtDetails() {
       color,
       price,
       selectedImage,
+
       category: "Shirts",
     };
     const res = await axios.post(
@@ -52,7 +52,7 @@ function AddShirtDetails() {
   }
   // const
   return (
-    <div className="d-flex flex-column gap-4 fade-in">
+    <form className="d-flex flex-column gap-4 fade-in">
       <TextField
         id="outlined-basic"
         label="Title"
@@ -132,14 +132,10 @@ function AddShirtDetails() {
           </div>
         )}
       </div>
-      <button
-        style={{ width: 300 }}
-        className="m-1 bg-warning"
-        onClick={handleClick}
-      >
+      <button style={{ width: 300 }} className="m-1 bg-warning" type="submit">
         Add Shirt
       </button>
-    </div>
+    </form>
   );
 }
 

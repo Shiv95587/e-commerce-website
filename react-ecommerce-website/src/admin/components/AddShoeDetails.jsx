@@ -9,6 +9,7 @@ function AddShoeDetails() {
   const [quantity, setQuantity] = useState("");
   const [price, setPrice] = useState(0);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [error, setError] = useState(false);
   const handleImageChange = (event) => {
     const file = event.target.files[0];
 
@@ -29,26 +30,33 @@ function AddShoeDetails() {
     const qty = quantity.split(",").map((item) => Number(item));
     console.log(qty);
 
-    const data = {
-      title,
-      size: s,
-      quantity: qty,
-      color,
-      price,
-      selectedImage,
-      category: "Shoes",
-    };
-    const res = await axios.post(
-      "http://localhost:5000/api/products/add-shoe",
-      data
-    );
+    if (s.length !== qty.length) {
+      setError(true);
+      console.log("HI hello");
+    } else {
+      const data = {
+        title,
+        size: s,
+        quantity: qty,
+        color,
+        price,
+        selectedImage,
+        category: "Shoes",
+      };
+      const res = await axios.post(
+        "http://localhost:5000/api/products/add-shoe",
+        data
+      );
+      console.log("Response", await res.json());
 
-    setSize("");
-    setQuantity("");
-    setTitle("");
-    setColor("");
-    setSelectedImage(null);
-    setPrice("");
+      setError(false);
+      setSize("");
+      setQuantity("");
+      setTitle("");
+      setColor("");
+      setSelectedImage(null);
+      setPrice(0);
+    }
   }
   // const
   return (
@@ -77,6 +85,7 @@ function AddShoeDetails() {
         variant="outlined"
         required
         value={size}
+        placeholder="Multiple: 10,11,12"
         onChange={(e) => setSize(e.target.value)}
       />
 
@@ -86,6 +95,7 @@ function AddShoeDetails() {
         variant="outlined"
         required
         value={quantity}
+        placeholder="Multiple: 50,55,64"
         onChange={(e) => setQuantity(e.target.value)}
       />
 
@@ -132,13 +142,14 @@ function AddShoeDetails() {
           </div>
         )}
       </div>
-      <button
-        style={{ width: 300 }}
-        className="m-1 bg-warning"
-        onClick={handleClick}
-      >
+      <button style={{ width: 300 }} className="m-1 bg-warning">
         Add Shoe
       </button>
+      {error && (
+        <div className="text-danger">
+          There should be equal no sizes and quantity
+        </div>
+      )}
     </div>
   );
 }

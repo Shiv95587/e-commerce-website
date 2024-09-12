@@ -175,7 +175,7 @@ router.post("/add-cap", async (req, res) => {
     const [result1] = await db
       .promise()
       .query(
-        "INSERT INTO PRODUCTS (PRODUCT_TITLE, PRODUCT_PRICE,PRODUCT_CATEGORY) VALUES (?, ?,?)",
+        "INSERT INTO PRODUCTS (PRODUCT_TITLE, PRODUCT_PRICE,PRODUCT_CATEGORY) VALUES (?,?,?)",
         [title, price, category]
       );
 
@@ -189,7 +189,7 @@ router.post("/add-cap", async (req, res) => {
     // Insert into Table 2
     const [result2] = await db
       .promise()
-      .query(`INSERT INTO CAPS (PRODUCT_ID, COLOR, QUANTITY) VALUES (?,?, ?)`, [
+      .query(`INSERT INTO CAPS (PRODUCT_ID, COLOR, QUANTITY) VALUES (?,?,?)`, [
         productId,
         color,
         quantity,
@@ -233,7 +233,7 @@ router.post("/add-bag", async (req, res) => {
     const [result1] = await db
       .promise()
       .query(
-        "INSERT INTO PRODUCTS (PRODUCT_TITLE, PRODUCT_PRICE,PRODUCT_CATEGORY) VALUES (?, ?,?)",
+        "INSERT INTO PRODUCTS (PRODUCT_TITLE, PRODUCT_PRICE,PRODUCT_CATEGORY) VALUES (?,?,?)",
         [title, price, category]
       );
 
@@ -247,7 +247,7 @@ router.post("/add-bag", async (req, res) => {
     // Insert into Table 2
     const [result2] = await db
       .promise()
-      .query(`INSERT INTO BAGS (PRODUCT_ID, COLOR, QUANTITY) VALUES (?,?, ?)`, [
+      .query(`INSERT INTO BAGS (PRODUCT_ID, COLOR, QUANTITY) VALUES (?,?,?)`, [
         productId,
         color,
         quantity,
@@ -290,7 +290,7 @@ router.post("/add-pant", async (req, res) => {
     const [result1] = await db
       .promise()
       .query(
-        "INSERT INTO PRODUCTS (PRODUCT_TITLE, PRODUCT_PRICE,PRODUCT_CATEGORY) VALUES (?, ?,?)",
+        "INSERT INTO PRODUCTS (PRODUCT_TITLE, PRODUCT_PRICE,PRODUCT_CATEGORY) VALUES (?,?,?)",
         [title, price, category]
       );
 
@@ -306,7 +306,7 @@ router.post("/add-pant", async (req, res) => {
       const [result2] = await db
         .promise()
         .query(
-          `INSERT INTO Pants (PRODUCT_ID, COLOR, PANT_SIZE, QUANTITY) VALUES (?,?, ?,?)`,
+          `INSERT INTO Pants (PRODUCT_ID, COLOR, PANT_SIZE, QUANTITY) VALUES (?,?,?,?)`,
           [productId, color, size[i], quantity[i]]
         );
     }
@@ -348,7 +348,7 @@ router.post("/add-shirt", async (req, res) => {
     const [result1] = await db
       .promise()
       .query(
-        "INSERT INTO PRODUCTS (PRODUCT_TITLE, PRODUCT_PRICE,PRODUCT_CATEGORY) VALUES (?, ?,?)",
+        "INSERT INTO PRODUCTS (PRODUCT_TITLE, PRODUCT_PRICE,PRODUCT_CATEGORY) VALUES (?,?,?)",
         [title, price, category]
       );
 
@@ -397,6 +397,7 @@ router.post("/add-shirt", async (req, res) => {
 
 router.post("/add-shoe", async (req, res) => {
   const { title, color, category, size, quantity, img, price } = req.body;
+  console.log("Hello body: ", req.body);
 
   try {
     // Start a transaction
@@ -406,7 +407,7 @@ router.post("/add-shoe", async (req, res) => {
     const [result1] = await db
       .promise()
       .query(
-        "INSERT INTO PRODUCTS (PRODUCT_TITLE, PRODUCT_PRICE,PRODUCT_CATEGORY) VALUES (?, ?,?)",
+        "INSERT INTO PRODUCTS (PRODUCT_TITLE, PRODUCT_PRICE,PRODUCT_CATEGORY) VALUES (?,?,?)",
         [title, price, "Shoes"]
       );
 
@@ -422,7 +423,7 @@ router.post("/add-shoe", async (req, res) => {
       const [result2] = await db
         .promise()
         .query(
-          `INSERT INTO SHOES (PRODUCT_ID, COLOR, SHOE_SIZE, QUANTITY) VALUES (?,?, ?,?)`,
+          `INSERT INTO SHOES (PRODUCT_ID, COLOR, SHOE_SIZE, QUANTITY) VALUES (?,?,?,?)`,
           [productId, color, size[i], quantity[i]]
         );
     }

@@ -7,6 +7,7 @@ function PrivateRoute({ children }) {
 
   const location = useLocation();
 
+  console.log("Locat: ", location);
   if (email.length !== 0) {
     return children;
   }

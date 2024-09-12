@@ -61,9 +61,9 @@ const NavBar = () => {
                   <li>
                     <Link to={"/shop"}>Shop</Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <Link to={"/blog"}>Blog</Link>
-                  </li>
+                  </li> */}
                   <li>
                     <Link to={"/about"}>About</Link>
                   </li>

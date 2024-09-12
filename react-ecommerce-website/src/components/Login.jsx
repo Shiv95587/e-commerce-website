@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../Contexts/AuthProvider";
 function Login() {
   const { login, setEmail } = useContext(AuthContext);
@@ -11,6 +11,9 @@ function Login() {
   //   console.log("hi I am email: " + email);
   // }, []);
 
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
+
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -18,7 +21,7 @@ function Login() {
     // if login successful
 
     if (r === 1) {
-      navigate("/");
+      navigate(from);
     } else {
       alert("Incorrect email address or Password");
     }

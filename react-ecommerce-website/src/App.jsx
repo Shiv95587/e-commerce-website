@@ -33,7 +33,7 @@ function App() {
         <div className="min-vh-100">
           <Outlet someprops={someprops} />
         </div>
-        <Footer />
+        {/* <Footer /> */}
       </LoginContext.Provider>
     </div>
   );

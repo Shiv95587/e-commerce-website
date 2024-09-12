@@ -3,6 +3,7 @@ import { Link, json, useNavigate } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
 import delImg from "../assets/images/shop/del.png";
 import { AuthContext } from "../Contexts/AuthProvider";
+import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
 function CartPage() {
   const [cartItems, setCartItems] = useState([]);
@@ -62,40 +63,89 @@ function CartPage() {
   const orderTotal = cartSubTotal;
 
   const navigate = useNavigate();
-  async function handleCheckOut(e) {
-    e.preventDefault();
+  async function makePayment() {
+    const stripe = await loadStripe(import.meta.env.VITE_STRIPE_KEY);
+
     const products = JSON.parse(localStorage.getItem(email));
+    console.log(products);
 
-    for (let i = 0; i < products.length; ++i) {
-      const product = products[i];
+    const body = { products };
+    const headers = { "Content-Type": "application/json" };
 
-      const res = await axios.put(
-        `http://localhost:5000/api/products/update/${product.id}`,
-        product
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/payments/create-checkout-session",
+        {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(body),
+        }
       );
-      console.log(res);
+
+      if (!response.ok) {
+        console.error(
+          "Failed to create checkout session:",
+          response.statusText
+        );
+        return;
+      }
+
+      const session = await response.json();
+
+      // Redirect to Stripe Checkout
+      const result = await stripe.redirectToCheckout({ sessionId: session.id });
+
+      return result;
+    } catch (error) {
+      console.error("Error during payment process:", error);
     }
-
-    let productsText = "";
-
-    for (let i = 0; i < products.length; ++i) {
-      const product = products[i];
-      productsText += `${product.quantity}x ${product.name}\n`;
-    }
-
-    console.log(productsText);
-
-    const res = await axios.post(`http://localhost:5000/api/orders/${email}`, {
-      productsText,
-      cartSubTotal,
-    });
-    console.log(res);
-
-    localStorage.removeItem(email);
-    console.log("Key removed from local storage.");
-    navigate("/");
   }
 
+  async function handleCheckOut(e) {
+    e.preventDefault();
+
+    const result = await makePayment();
+    if (result && result.error) {
+      console.log("Stripe Error: ", result.error);
+    } else {
+      const products = JSON.parse(localStorage.getItem(email));
+      try {
+        for (let i = 0; i < products.length; ++i) {
+          const product = products[i];
+
+          const res = await axios.put(
+            `http://localhost:5000/api/products/update/${product.id}`,
+            product
+          );
+          console.log(res);
+        }
+
+        let productsText = "";
+
+        for (let i = 0; i < products.length; ++i) {
+          const product = products[i];
+          productsText += `${product.quantity}x ${product.name}\n`;
+        }
+
+        console.log(productsText);
+
+        const res = await axios.post(
+          `http://localhost:5000/api/orders/${email}`,
+          {
+            productsText,
+            cartSubTotal,
+          }
+        );
+        console.log(res);
+
+        localStorage.removeItem(email);
+        console.log("Key removed from local storage.");
+        navigate("/orders");
+      } catch (error) {
+        console.error("Error during checkout process:", error);
+      }
+    }
+  }
   return (
     <div>
       <PageHeader title={"Shop Cart"} currentPage={"Cart Page"} />

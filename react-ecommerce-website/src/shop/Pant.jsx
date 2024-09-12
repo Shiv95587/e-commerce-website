@@ -1,6 +1,8 @@
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../Contexts/AuthProvider";
+import Modal from "./Modal";
+import axios from "axios";
 
 const desc = "Pants";
 
@@ -13,10 +15,12 @@ function Pant({ items }) {
     ratingsCount,
   } = items[0];
 
+  const [error, setError] = useState(0);
   const { email } = useContext(AuthContext);
 
   const colors = [...new Set(items.map((item) => item.COLOR))];
-  const sizes = items.map((item) => item.SHOE_SIZE);
+  const sizes = items.map((item) => item.PANT_SIZE);
+  console.log("sizes: ", sizes);
   const quantities = items.map((item) => item.QUANTITY);
 
   const [prequantity, setQuantity] = useState(0);
@@ -40,42 +44,49 @@ function Pant({ items }) {
     setQuantity((prequantity) => prequantity + 1);
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
-    const product = {
-      id: id,
-      img: img,
-      name: name,
-      price: price,
-      quantity: prequantity,
-      size: size,
-      color: color,
-      category: "Pants",
-      coupon,
-    };
-
-    const existingCart = JSON.parse(localStorage.getItem(email)) || [];
-
-    console.log(existingCart);
-    const existingProductIndex = existingCart.findIndex(
-      (item) => item.id === id
-    );
-
-    if (existingProductIndex !== -1) {
-      existingCart[existingProductIndex].quantity += prequantity;
+    const res = await axios.get(`http://localhost:5000/api/products/${id}`);
+    console.log("Data: ", res.data[0]);
+    if (prequantity > res.data[0].QUANTITY) {
+      setError(1);
     } else {
-      existingCart.push(product);
+      const product = {
+        id: id,
+        img: img,
+        name: name,
+        price: price,
+        quantity: prequantity,
+        size: size,
+        color: color,
+        category: "Pants",
+        coupon,
+      };
+
+      const existingCart = JSON.parse(localStorage.getItem(email)) || [];
+
+      console.log(existingCart);
+      const existingProductIndex = existingCart.findIndex(
+        (item) => item.id === id
+      );
+
+      if (existingProductIndex !== -1) {
+        existingCart[existingProductIndex].quantity += prequantity;
+      } else {
+        existingCart.push(product);
+      }
+
+      console.log(existingCart);
+
+      localStorage.setItem(email, JSON.stringify(existingCart));
+
+      setQuantity(0);
+      setSize("Select Size");
+      setColor("Select Color");
+      setCoupon("");
+      setError(0);
     }
-
-    console.log(existingCart);
-
-    localStorage.setItem(email, JSON.stringify(existingCart));
-
-    setQuantity(0);
-    setSize("Select Size");
-    setColor("Select Color");
-    setCoupon("");
   }
 
   return (
@@ -139,6 +150,8 @@ function Pant({ items }) {
               +
             </div>
           </div>
+          {error === 1 && <Modal setError={setError} />}
+
           <div className="discount-code mb-2">
             <input
               type="text"

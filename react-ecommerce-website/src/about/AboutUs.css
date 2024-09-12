@@ -1,0 +1,61 @@
+/* body {
+  font-family: "Arial", sans-serif;
+}
+
+.mission-content p {
+  animation: fadeIn 1.5s ease-out;
+}
+
+.mission-img {
+  animation: slideInRight 1.5s ease-out;
+}
+
+.team-member {
+  animation: bounceIn 1.5s ease-out;
+}
+
+.team-member img {
+  transition: transform 0.3s;
+}
+
+.team-member img:hover {
+  transform: scale(1.1);
+}
+.about-us-footer {
+  background-color: #ffdf40;
+  color: white;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes bounceIn {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+} */

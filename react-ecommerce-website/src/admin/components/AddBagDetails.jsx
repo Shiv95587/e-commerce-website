@@ -63,7 +63,7 @@ function AddBagDetails() {
   }
   // const
   return (
-    <div className="d-flex flex-column gap-4 fade-in">
+    <form className="d-flex flex-column gap-4 fade-in">
       <TextField
         id="outlined-basic"
         label="Title"
@@ -136,14 +136,10 @@ function AddBagDetails() {
         )}
       </div>
 
-      <button
-        style={{ width: 300 }}
-        className="m-1 bg-warning"
-        onClick={handleClick}
-      >
+      <button style={{ width: 300 }} className="m-1 bg-warning" type="submit">
         Add Bag
       </button>
-    </div>
+    </form>
   );
 }
 

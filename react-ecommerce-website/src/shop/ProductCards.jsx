@@ -22,9 +22,9 @@ function ProductCards({ GridList, products }) {
                   <Link to={`/shop/${product.PRODUCT_ID}`}>
                     <i className="icofont-eye"></i>
                   </Link>
-                  <a href="#">
+                  {/* <a href="#">
                     <i className="icofont-heart"></i>
-                  </a>
+                  </a> */}
                   <Link to={`/shop/cart-page`}>
                     <i className="icofont-cart-alt"></i>
                   </Link>

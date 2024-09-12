@@ -2,6 +2,8 @@ import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import "../assets/css/Bag.css";
 import { AuthContext } from "../Contexts/AuthProvider";
+import axios from "axios";
+import Modal from "./Modal";
 const desc = "Bags";
 function Bag({ items }) {
   const {
@@ -11,6 +13,7 @@ function Bag({ items }) {
     PRODUCT_PRICE: price,
     ratingsCount,
   } = items[0];
+  const [error, setError] = useState(0);
 
   const colors = [...new Set(items.map((item) => item.COLOR))];
 
@@ -37,42 +40,49 @@ function Bag({ items }) {
     setQuantity((prequantity) => prequantity + 1);
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
-    const product = {
-      id: id,
-      img: img,
-      category: "Bags",
-      name: name,
-      price: price,
-      quantity: prequantity,
-      size: size,
-      color: color,
-      coupon,
-    };
-
-    const existingCart = JSON.parse(localStorage.getItem(email)) || [];
-
-    console.log(existingCart);
-    const existingProductIndex = existingCart.findIndex(
-      (item) => item.id === id
-    );
-
-    if (existingProductIndex !== -1) {
-      existingCart[existingProductIndex].quantity += prequantity;
+    const res = await axios.get(`http://localhost:5000/api/products/${id}`);
+    console.log("Data: ", res.data[0]);
+    if (prequantity > res.data[0].QUANTITY) {
+      setError(1);
     } else {
-      existingCart.push(product);
+      const product = {
+        id: id,
+        img: img,
+        category: "Bags",
+        name: name,
+        price: price,
+        quantity: prequantity,
+        size: size,
+        color: color,
+        coupon,
+      };
+
+      const existingCart = JSON.parse(localStorage.getItem(email)) || [];
+
+      console.log(existingCart);
+      const existingProductIndex = existingCart.findIndex(
+        (item) => item.id === id
+      );
+
+      if (existingProductIndex !== -1) {
+        existingCart[existingProductIndex].quantity += prequantity;
+      } else {
+        existingCart.push(product);
+      }
+
+      console.log(existingCart);
+
+      localStorage.setItem(email, JSON.stringify(existingCart));
+
+      setQuantity(0);
+      setSize("Select Size");
+      setColor("Select Color");
+      setCoupon("");
+      setError(0);
     }
-
-    console.log(existingCart);
-
-    localStorage.setItem(email, JSON.stringify(existingCart));
-
-    setQuantity(0);
-    setSize("Select Size");
-    setColor("Select Color");
-    setCoupon("");
   }
 
   return (
@@ -134,6 +144,7 @@ function Bag({ items }) {
               +
             </div>
           </div>
+          {error === 1 && <Modal setError={setError} />}
 
           <div className="discount-code mb-2">
             <input

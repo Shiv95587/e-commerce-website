@@ -25,17 +25,20 @@ import AuthProvider from "./Contexts/AuthProvider.jsx";
 import PrivateRoute from "./PrivateRoute/PrivateRoute.jsx";
 import About from "./about/About.jsx";
 import Contact from "./contact/Contact.jsx";
+import ErrorNotFound from "./not-found.jsx";
+import PaymentCancel from "./paymentCancel.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
       { path: "/", element: <Home /> },
-      { path: "/blog", element: <Blog /> },
+      // { path: "/blog", element: <Blog /> },
       {
         path: "/shop",
         element: <Shop />,
       },
+      { path: "*", element: <ErrorNotFound /> },
       {
         path: "shop/:id",
         element: (
@@ -44,8 +47,24 @@ const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
+      {
+        path: "/cancel",
+        element: (
+          <PrivateRoute>
+            <PaymentCancel />
+          </PrivateRoute>
+        ),
+      },
+
       { path: "/about", element: <About /> },
-      { path: "/cart-page", element: <CartPage /> },
+      {
+        path: "/cart-page",
+        element: (
+          <PrivateRoute>
+            <CartPage />
+          </PrivateRoute>
+        ),
+      },
       { path: "/admin", element: <Admin /> },
       { path: "/contact", element: <Contact /> },
       {
@@ -58,7 +77,14 @@ const router = createBrowserRouter([
       },
       { path: "/login", element: <Login /> },
       { path: "/sign-up", element: <SignUp /> },
-      { path: "/orders", element: <OrdersPage /> },
+      {
+        path: "/orders",
+        element: (
+          <PrivateRoute>
+            <OrdersPage />
+          </PrivateRoute>
+        ),
+      },
     ],
   },
 ]);
