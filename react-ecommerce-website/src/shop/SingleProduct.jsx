@@ -36,7 +36,7 @@ function SingleProduct() {
   }, [id]);
 
   const result = product;
-  if (result.length === 0) return <ErrorNotFound />;
+
   console.log("product: ", result);
   // finding the category of item with given id
   const category = result[0]?.PRODUCT_CATEGORY;
@@ -135,9 +135,9 @@ function SingleProduct() {
                 </div>
               </article>
             </div>
-            <div className="col-lg-4 col-12">
+            {/* <div className="col-lg-4 col-12">
               <aside></aside>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

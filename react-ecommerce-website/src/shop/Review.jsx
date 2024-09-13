@@ -1,5 +1,5 @@
 import { Rating } from "@mui/material";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { LoginContext } from "../Contexts/LoginContext";
 import { AuthContext } from "../Contexts/AuthProvider";
@@ -44,6 +44,8 @@ function Review({ prodid }) {
   const { email } = useContext(AuthContext);
   const [value, setValue] = useState(1);
   const [desc, setDesc] = useState("");
+  const [reviews, setReviews] = useState([]);
+  const [alreadyReviewed, setAlreadyReviewed] = useState(false);
 
   const navigate = useNavigate();
 
@@ -56,29 +58,87 @@ function Review({ prodid }) {
     console.log(r);
     navigate("/shop");
   }
+
+  useEffect(() => {
+    async function fetchReviews() {
+      try {
+        const res = await axios.get(
+          `http://localhost:5000/api/reviews/${prodid}`
+        );
+        console.log("Reviews of prod is: ", res.data.data);
+        if (res.data.success) setReviews(res.data.data);
+        else setReviews([]);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    fetchReviews();
+  }, [prodid]);
+
+  useEffect(() => {
+    async function isAlreadyReviewed() {
+      console.log(`Email: ${email}, product id: ${prodid}`);
+      const res = await axios.get(
+        `http://localhost:5000/api/reviews/check-review?custemail=${email}&prodid=${prodid}`
+      );
+      setAlreadyReviewed(res.data.reviewed);
+    }
+
+    isAlreadyReviewed();
+  }, [email, prodid]);
+
   return (
     <>
-      <ul className={`review-nav lab-ul RevActive`}>
-        {/* <li className="desc" onClick={() => setReviewShow(!reviewShow)}>
+      {reviews.length > 0 && (
+        <ul className={`review-nav lab-ul RevActive`}>
+          {/* <li className="desc" onClick={() => setReviewShow(!reviewShow)}>
           Description
         </li> */}
-        <li className="rev">Reviews 4</li>
-      </ul>
+          <li className="rev">
+            Reviews {reviews.length > 1000 ? "1k+" : reviews.length}
+          </li>
+        </ul>
+      )}
 
       {/* desc & review content */}
 
       <div className={`review-content review-content-show`}>
         <div className="review-showing">
-          <ul
-            className="content lab-ul"
-            style={{
-              height: "500px", // Adjust the height as needed
-              overflowY: "auto",
-              // border: "1px solid #ccc",
-              marginBottom: "10px",
-            }}
-          >
-            {ReviewList.map((review, i) => (
+          {reviews.length > 0 && (
+            <ul
+              className="content lab-ul"
+              style={{
+                height: "500px", // Adjust the height as needed
+                overflowY: "auto",
+                // border: "1px solid #ccc",
+                marginBottom: "10px",
+              }}
+            >
+              {reviews.map((review, i) => (
+                <li key={i}>
+                  <div className="post-thumb">
+                    {/* <img src={review.imgUrl} alt="" /> */}
+                    <img src={ReviewList[i].imgUrl} alt="" />
+                  </div>
+                  <div className="post-content">
+                    <div className="entry-meta">
+                      <div className="posted-on">
+                        <a href="#">
+                          {review.CUSTOMER_FIRSTNAME +
+                            " " +
+                            review.CUSTOMER_LASTNAME}
+                        </a>
+                        <p>{review.REVIEW_DATE}</p>
+                      </div>
+                    </div>
+                    <div className="entry-content">
+                      <p>{review.REVIEW_DESCRIPTION}</p>
+                    </div>
+                  </div>
+                </li>
+              ))}
+              {/* {ReviewList.map((review, i) => (
               <li key={i}>
                 <div className="post-thumb">
                   <img src={review.imgUrl} alt="" />
@@ -95,34 +155,35 @@ function Review({ prodid }) {
                   </div>
                 </div>
               </li>
-            ))}
-          </ul>
+            ))} */}
+            </ul>
+          )}
 
           {/* add review field */}
 
-          <div className="client-review">
-            <div className="review-form">
-              <div className="review-title">
-                <h5>{reviewTitle}</h5>
-              </div>
-
-              <form action="action" className="row" onSubmit={handleSubmit}>
-                <div className="col-md-4 col-12 mb-2">
-                  <div className="rating">
-                    <span className="me-2">Your Rating</span>
-                    <Rating
-                      name="simple-controlled"
-                      value={value}
-                      onChange={(event, newValue) => {
-                        setValue(newValue);
-                      }}
-                    />
-                    {/* Here we will put actual rating */}
-                    {/* <Rating /> */}
-                  </div>
+          {!alreadyReviewed && (
+            <div className="client-review">
+              <div className="review-form">
+                <div className="review-title">
+                  <h5>{reviewTitle}</h5>
                 </div>
+                <form action="action" className="row" onSubmit={handleSubmit}>
+                  <div className="col-md-4 col-12 mb-2">
+                    <div className="rating">
+                      <span className="me-2">Your Rating</span>
+                      <Rating
+                        name="simple-controlled"
+                        value={value}
+                        onChange={(event, newValue) => {
+                          setValue(newValue);
+                        }}
+                      />
+                      {/* Here we will put actual rating */}
+                      {/* <Rating /> */}
+                    </div>
+                  </div>
 
-                {/* <div className="col-md-8 col-12">
+                  {/* <div className="col-md-8 col-12">
                   <input
                     type="text"
                     name="name"
@@ -131,7 +192,7 @@ function Review({ prodid }) {
                   />
                 </div> */}
 
-                {/* <div className="col-md-4 col-12">
+                  {/* <div className="col-md-4 col-12">
                   <input
                     type="email"
                     name="name"
@@ -140,26 +201,27 @@ function Review({ prodid }) {
                   />
                 </div> */}
 
-                <div className="col-md-12 col-12">
-                  <textarea
-                    name="message"
-                    id="message"
-                    rows="8"
-                    value={desc}
-                    onChange={(e) => setDesc(e.target.value)}
-                    placeholder="Type Here message"
-                    required
-                  ></textarea>
-                </div>
+                  <div className="col-md-12 col-12">
+                    <textarea
+                      name="message"
+                      id="message"
+                      rows="8"
+                      value={desc}
+                      onChange={(e) => setDesc(e.target.value)}
+                      placeholder="Type Here message"
+                      required
+                    ></textarea>
+                  </div>
 
-                <div className="col-12">
-                  <button type="submit" className="default-button">
-                    <span>Submit Review</span>
-                  </button>
-                </div>
-              </form>
+                  <div className="col-12">
+                    <button type="submit" className="default-button">
+                      <span>Submit Review</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </>

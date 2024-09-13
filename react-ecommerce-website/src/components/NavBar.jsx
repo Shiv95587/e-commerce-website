@@ -31,17 +31,30 @@ const NavBar = () => {
       }`}
     >
       <div className={`header-top d-md-none ${socialToggle ? "open" : ""}`}>
-        <div className="container">
-          <div className="header-top-area">
-            <Link to="/sign-up" className="lab-btn me-3">
-              <span>Create Account</span>
-            </Link>
+        {email.length === 0 ? (
+          <div className="container">
+            <div className="header-top-area">
+              <Link to="/sign-up" className="lab-btn me-3">
+                <span>Create Account</span>
+              </Link>
 
-            <Link to="/login">
-              <span>Login</span>
-            </Link>
+              <Link to="/login">
+                <span>Login</span>
+              </Link>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="container">
+            <div className="header-top-area">
+              <Link to={`/orders`} className="lab-btn me-3 k">
+                <span>Orders</span>
+              </Link>
+              <button onClick={handleLogOut} className="">
+                Log Out
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="header-bottom">

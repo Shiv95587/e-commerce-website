@@ -64,7 +64,11 @@ function ProductCards({ GridList, products }) {
 
                 {/* product action links */}
                 <div className="product-action-link">
-                  <Link to={`/shop/${product.PRODUCT_ID}`}>
+                  <Link
+                    to={`/shop/${getCategoryName(product.PRODUCT_CATEGORY)}/${
+                      product.PRODUCT_ID
+                    }`}
+                  >
                     <i className="icofont-eye"></i>
                   </Link>
                   {/* <a href="#">
@@ -78,7 +82,11 @@ function ProductCards({ GridList, products }) {
 
               <div className="product-content">
                 <h5>
-                  <Link to={`/shop/${product.PRODUCT_ID}`}>
+                  <Link
+                    to={`/shop/${getCategoryName(product.PRODUCT_CATEGORY)}/${
+                      product.PRODUCT_ID
+                    }`}
+                  >
                     {product.PRODUCT_TITLE}
                   </Link>
                 </h5>

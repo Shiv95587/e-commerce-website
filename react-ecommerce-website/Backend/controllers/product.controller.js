@@ -92,8 +92,45 @@ router.get("/:id", async (req, res) => {
 // -----------------END GET REQUESTS---------------
 
 // --------------DELETE REQUESTS-----------
-router.delete("/delete", (req, res) => {});
-// --------------END DELETE REQUESTS-------
+async function deleteProduct(id, color, size, category) {
+  try {
+    // Start the transaction
+    await db.promise().beginTransaction();
+
+    let sqlQuery = "";
+    let result = null;
+
+    // Conditionally handle the presence of size
+    if (size) {
+      sqlQuery = `DELETE FROM ?? WHERE PRODUCT_ID=? AND COLOR=? AND SIZE=?`;
+      result = await db.promise().query(sqlQuery, [category, id, color, size]);
+    } else {
+      sqlQuery = `DELETE FROM ?? WHERE PRODUCT_ID=? AND COLOR=?`;
+      result = await db.promise().query(sqlQuery, [category, id, color]);
+    }
+
+    // Check if any other rows exist with the same PRODUCT_ID
+    const [result2] = await db
+      .promise()
+      .query(`SELECT COUNT(*) as count FROM ?? WHERE PRODUCT_ID=?`, [
+        category,
+        id,
+      ]);
+
+    // If no rows exist, delete from PRODUCTS table
+    if (result2[0].count === 0) {
+      await db.promise().query(`DELETE FROM PRODUCTS WHERE PRODUCT_ID=?`, [id]);
+    }
+
+    // Commit the transaction
+    await db.promise().commit();
+    console.log("Product deleted successfully");
+  } catch (error) {
+    await db.promise().rollback();
+    console.error("Error deleting product: ", error);
+    throw error; // Rethrow the error to handle it outside of this function
+  }
+}
 
 // --------------PUT REQUESTS---------------
 router.put("/update/:id", async (req, res) => {
@@ -101,6 +138,7 @@ router.put("/update/:id", async (req, res) => {
   const category = req.body.category;
   const size = req.body.size;
   const quantity = req.body.quantity;
+  const color = req.body.color;
   try {
     // Start a transaction
     await db.promise().beginTransaction();
@@ -121,6 +159,24 @@ router.put("/update/:id", async (req, res) => {
           );
 
         console.log(data);
+
+        const query2 =
+          "SELECT QUANTITY FROM ?? WHERE PRODUCT_ID = ? AND COLOR=?";
+        const [rows] = await db
+          .promise()
+          .query(query2, [category, productId, color]);
+
+        if (rows.length > 0) {
+          const quantity = rows[0].QUANTITY;
+          console.log("Quantity is: ", quantity);
+
+          if (quantity === 0) {
+            deleteProduct(productId, color, size, category);
+          }
+        } else {
+          console.log("No product found with the given details.");
+        }
+
         res
           .status(200)
           .json({ message: "item found and data updated", item: data });
@@ -134,6 +190,22 @@ router.put("/update/:id", async (req, res) => {
           );
 
         console.log(data);
+
+        const query2 =
+          "SELECT QUANTITY FROM ?? WHERE PRODUCT_ID = ? AND SIZE=? AND COLOR=?";
+        const [rows] = await db
+          .promise()
+          .query(query2, [category, productId, size, color]);
+        if (rows.length > 0) {
+          const quantity = rows[0].QUANTITY;
+          console.log("Quantity is: ", quantity);
+
+          if (quantity === 0) {
+            deleteProduct(productId, color, size, category);
+          }
+        } else {
+          console.log("No product found with the given details.");
+        }
         res
           .status(200)
           .json({ message: "item found and data updated", item: data });

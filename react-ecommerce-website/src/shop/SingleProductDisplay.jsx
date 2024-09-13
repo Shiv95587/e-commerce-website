@@ -159,7 +159,7 @@ export default function SingleProductDisplay({ items, category }) {
             </div>
             <input
               type="text"
-              className="cart-plus-minus-box full-width"
+              className="cart-plus-minus-box cart-plus-minus-box-2"
               name="qtybutton"
               id="qtybutton"
               value={prequantity}

@@ -4,6 +4,13 @@ import { useParams } from "react-router-dom";
 
 const router = express.Router();
 
+function getDate() {
+  const currentDate = new Date();
+  const options = { timeZoneName: "short", hour12: true };
+  const dateString = currentDate.toLocaleString("en-US", options);
+  return dateString;
+}
+
 router.get("/", (req, res) => {
   const sql = "SELECT * FROM REVIEWS";
   db.query(sql, (err, result) => {
@@ -13,6 +20,37 @@ router.get("/", (req, res) => {
       res.json(result);
     }
   });
+});
+
+router.get("/check-review", async (req, res, next) => {
+  const { custemail, prodid } = req.query;
+
+  try {
+    const alreadyReviewedQuery =
+      "SELECT COUNT(*) AS count FROM REVIEWS WHERE CUSTOMER_EMAIL = ? AND PRODUCT_ID = ?";
+    const [rows] = await db
+      .promise()
+      .query(alreadyReviewedQuery, [custemail, prodid]);
+    const reviewCount = rows[0].count;
+    console.log("Count is: ", reviewCount);
+    if (reviewCount > 0) {
+      res.json({
+        message: "Customer has already reviewed this product.",
+        reviewed: true,
+      });
+    } else {
+      res.json({
+        message: "Customer has not reviewed this product.",
+        reviewed: false,
+      });
+    }
+    console.log("Hi RES is: ", reviewCount);
+  } catch (err) {
+    console.error("Error executing query:", err);
+    res
+      .status(500)
+      .json({ error: "An error occurred while checking the review status." });
+  }
 });
 
 router.get("/:productId", async (req, res) => {
@@ -35,6 +73,7 @@ router.get("/:productId", async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Data received FROM REVIEWS table successfully",
+      data: result,
     });
   } catch (error) {
     // Rollback the transaction if an error occurs
@@ -48,12 +87,6 @@ router.get("/:productId", async (req, res) => {
   }
 });
 
-function getDate() {
-  const currentDate = new Date();
-  const options = { timeZoneName: "short", hour12: true };
-  const dateString = currentDate.toLocaleString("en-US", options);
-  return dateString;
-}
 router.post("/:custemail/:prodid", async (req, res) => {
   const custemail = req.params.custemail;
   const prodid = req.params.prodid;
@@ -65,7 +98,6 @@ router.post("/:custemail/:prodid", async (req, res) => {
   try {
     // starting a transaction
     await db.promise().beginTransaction();
-
     const sqlQuery =
       "INSERT INTO REVIEWS (CUSTOMER_EMAIL, PRODUCT_ID, RATING,REVIEW_DESCRIPTION,REVIEW_DATE) VALUES(?,?,?,?,?)";
     const [results] = await db

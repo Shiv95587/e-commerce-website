@@ -72,7 +72,11 @@ function Banner() {
             {searchInput &&
               filteredProducts.map((product, index) => (
                 <li key={index}>
-                  <Link to={`/shop/${product.PRODUCT_ID}`}>
+                  <Link
+                    to={`/shop/${product.PRODUCT_CATEGORY.toLowerCase()}/${
+                      product.PRODUCT_ID
+                    }`}
+                  >
                     {product.PRODUCT_TITLE}
                   </Link>
                 </li>
