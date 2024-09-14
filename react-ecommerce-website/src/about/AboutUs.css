@@ -1,7 +1,3 @@
-/* body {
-  font-family: "Arial", sans-serif;
-}
-
 .mission-content p {
   animation: fadeIn 1.5s ease-out;
 }
@@ -16,6 +12,9 @@
 
 .team-member img {
   transition: transform 0.3s;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
 }
 
 .team-member img:hover {
@@ -24,6 +23,12 @@
 .about-us-footer {
   background-color: #ffdf40;
   color: white;
+}
+
+.mission img {
+  width: 400px;
+  height: 300px;
+  object-fit: cover;
 }
 @keyframes fadeIn {
   from {
@@ -58,4 +63,4 @@
     opacity: 1;
     transform: scale(1);
   }
-} */
+}

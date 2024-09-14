@@ -3,61 +3,61 @@ import "./ContactUs.css";
 import PageHeader from "../components/PageHeader";
 
 const ContactUs = () => {
+  // TODO: Submit the message
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
   return (
     <div>
-      {/* <header className="bg-primary text-white text-center py-5">
-        <div className="container">
-          <h1 className="display-4">Contact Us</h1>
-          <p className="lead">
-            We&apos;d love to hear from you. Fill out the form below to get in
-            touch.
-          </p>
-        </div>
-      </header> */}
       <PageHeader title={"Contact Us"} currentPage={"Contact Us"} />
 
-      <section id="contact-form" className="py-5">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-8 offset-md-2">
-              <form className=".contact-form">
-                <div className="form-group">
+      <section id="contact-us-form" className="contact-us-py-5">
+        <div className="contact-us-container">
+          <div className="contact-us-row">
+            <div className="contact-us-col-md-8 contact-us-offset-md-2">
+              <form className="contact-us-form">
+                <div className="contact-us-form-group">
                   <label htmlFor="name">Name</label>
                   <input
                     type="text"
-                    className="form-control"
+                    className="contact-us-form-control"
                     id="name"
                     placeholder="Your Name"
                   />
                 </div>
-                <div className="form-group">
+                <div className="contact-us-form-group">
                   <label htmlFor="email">Email address</label>
                   <input
                     type="email"
-                    className="form-control"
+                    className="contact-us-form-control"
                     id="email"
                     placeholder="Your Email"
                   />
                 </div>
-                <div className="form-group">
+                <div className="contact-us-form-group">
                   <label htmlFor="message">Message</label>
                   <textarea
-                    className="form-control"
+                    className="contact-us-form-control"
                     id="message"
                     rows="4"
                     placeholder="Your Message"
                   ></textarea>
                 </div>
-                <button type="submit" className="btn contact-btn-primary">
-                  Send Message
-                </button>
+                <div className="d-flex flex-row justify-content-center">
+                  <button
+                    type="submit"
+                    className="contact-us-btn contact-us-btn-primary"
+                  >
+                    Send Message
+                  </button>
+                </div>
               </form>
             </div>
           </div>
         </div>
       </section>
 
-      <footer className="text-white text-center contact-footer">
+      <footer className="contact-us-text-white contact-us-text-center contact-us-footer">
         <p>&copy; 2024 [Your Company Name]. All rights reserved.</p>
       </footer>
     </div>
