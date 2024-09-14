@@ -1,0 +1,8 @@
+.table thead {
+  background-color: #f16126; /* Apply background color */
+  color: white; /* Set text color */
+}
+
+.table thead th {
+  color: white !important; /* Ensure text color stays white */
+}

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../Contexts/AuthProvider";
 
@@ -9,7 +9,7 @@ function SignUp() {
   const [confirmPass, setConfirmPass] = useState("");
   const navigate = useNavigate();
 
-  const { createUser } = useContext(AuthContext);
+  const { createUser, email } = useContext(AuthContext);
 
   function isFullNameValid(name) {
     // Check if the name contains exactly two words
@@ -17,7 +17,11 @@ function SignUp() {
     return words.length === 2;
   }
 
-  function handleSubmit(e) {
+  useEffect(() => {
+    if (email.length > 0) navigate("/");
+  }, [email, navigate]);
+
+  async function handleSubmit(e) {
     e.preventDefault();
 
     if (!isFullNameValid(fullName)) {
@@ -35,10 +39,14 @@ function SignUp() {
       return;
     }
 
-    createUser(fullName, emailAddress, pass);
+    const res = await createUser(fullName, emailAddress, pass);
 
-    clearFields();
-    navigate("/login");
+    if (res) {
+      clearFields();
+      navigate("/login");
+    } else {
+      alert("Email already registered");
+    }
   }
 
   function clearFields() {
@@ -50,70 +58,72 @@ function SignUp() {
 
   return (
     <div className="login-section padding-tb section bg">
-      <div className="container">
-        <div className="account-wrapper">
-          <h3 className="title">Register</h3>
-          <form className="account-form" onSubmit={handleSubmit}>
-            <div className="form-group">
-              <input
-                type="text"
-                name="name"
-                id="name"
-                placeholder="Full Name *"
-                value={fullName}
-                onChange={(e) => setfullName(e.target.value)}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <input
-                type="email"
-                name="email"
-                id="email"
-                placeholder="Email Address *"
-                value={emailAddress}
-                onChange={(e) => setEmailAddress(e.target.value)}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <input
-                type="password"
-                name="password"
-                id="password"
-                placeholder="Password *"
-                value={pass}
-                onChange={(e) => setPass(e.target.value)}
-                required
-              />
-            </div>
+      {email.length === 0 && (
+        <div className="container">
+          <div className="account-wrapper">
+            <h3 className="title">Register</h3>
+            <form className="account-form" onSubmit={handleSubmit}>
+              <div className="form-group">
+                <input
+                  type="text"
+                  name="name"
+                  id="name"
+                  placeholder="Full Name *"
+                  value={fullName}
+                  onChange={(e) => setfullName(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  type="email"
+                  name="email"
+                  id="email"
+                  placeholder="Email Address *"
+                  value={emailAddress}
+                  onChange={(e) => setEmailAddress(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  type="password"
+                  name="password"
+                  id="password"
+                  placeholder="Password *"
+                  value={pass}
+                  onChange={(e) => setPass(e.target.value)}
+                  required
+                />
+              </div>
 
-            <div className="form-group">
-              <input
-                type="password"
-                name="confirmPassword"
-                id="confirmPassword"
-                placeholder="Confirm Password *"
-                value={confirmPass}
-                onChange={(e) => setConfirmPass(e.target.value)}
-                required
-              />
-            </div>
+              <div className="form-group">
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  id="confirmPassword"
+                  placeholder="Confirm Password *"
+                  value={confirmPass}
+                  onChange={(e) => setConfirmPass(e.target.value)}
+                  required
+                />
+              </div>
 
-            <div className="form-group">
-              <button type="submit" className="d-block lab-btn">
-                <span>SignUp Now</span>
-              </button>
-            </div>
-          </form>
+              <div className="form-group">
+                <button type="submit" className="d-block lab-btn">
+                  <span>SignUp Now</span>
+                </button>
+              </div>
+            </form>
 
-          <div className="account-bottom">
-            <span className="d-block cate pt-10">
-              Have an Account ? <Link to={"/login"}>Login</Link>
-            </span>
+            <div className="account-bottom">
+              <span className="d-block cate pt-10">
+                Have an Account ? <Link to={"/login"}>Login</Link>
+              </span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

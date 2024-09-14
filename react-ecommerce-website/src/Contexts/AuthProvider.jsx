@@ -1,63 +1,95 @@
 import axios from "axios";
 import React, { createContext, useEffect, useState } from "react";
+
 export const AuthContext = createContext();
 
 function AuthProvider({ children }) {
   const [email, setEmail] = useState("");
+  const [authToken, setAuthToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const createUser = async (fullName, email, password) => {
     const words = fullName.split(" ");
     const firstName = words[0];
     const lastName = words[1];
-    const res = await axios.post(
-      "http://localhost:5000/api/customers/add-customer",
-      {
-        email,
-        password,
-        firstName,
-        lastName,
-      }
-    );
 
-    // setLoading(true);
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/customers/add-customer",
+        {
+          email,
+          password,
+          firstName,
+          lastName,
+        }
+      );
+
+      console.log("Data: ", res.data);
+      if (res.data.success) {
+        console.log("Registration successful", res.data.message);
+        return 1;
+      } else {
+        return 0;
+      }
+    } catch (error) {
+      console.error("Error during registration:", error);
+      alert("An error occurred. Please try again.");
+      return 0;
+    }
   };
 
   const login = async (email, password) => {
-    const res = await axios.get(`http://localhost:5000/api/customers/${email}`);
-    console.log("R" + res);
+    try {
+      const res = await axios.post("http://localhost:5000/api/auth/login", {
+        email,
+        password,
+      });
 
-    if (res.data.length === 0) {
-      return -1;
-    } else if (res.data[0].PASSWORD === password) {
-      setEmail(email);
-      return 1;
-    } else {
+      // Extract token from response
+      const token = res.data.token;
+      if (token) {
+        setAuthToken(token);
+        setEmail(email);
+        localStorage.setItem("authToken", token);
+        localStorage.setItem("userEmail", email);
+        return 1;
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
       return 0;
     }
-    // setLoading(true);
   };
 
+  // Logout function to clear user session
   const logOut = () => {
+    setAuthToken(null);
     setEmail("");
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("userEmail");
   };
+
+  // Check if user is already logged in on app start
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    const storedEmail = localStorage.getItem("userEmail");
+    if (token && storedEmail) {
+      setAuthToken(token);
+      setEmail(storedEmail);
+    }
+    setLoading(false);
+  }, []);
+
   const authInfo = {
     email,
+    authToken,
     loading,
-    createUser,
     login,
     logOut,
+    createUser,
   };
 
-  // user is available or not
-  useEffect(() => {
-    // const unsubscribe = OnAuthSta();
-  });
-
   return (
-    <div>
-      <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
-    </div>
+    <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
   );
 }
 

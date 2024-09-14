@@ -16,22 +16,6 @@ router.get("/", (req, res) => {
   });
 });
 
-// router.get("/:email", async (req, res) => {
-//   const email = req.params.email;
-//   console.log(email);
-//   (req, res) => {
-//     const sql = "SELECT * FROM customers WHERE CUSTOMER_EMAIL = ?";
-//     db.query(sql, [email], (err, result) => {
-//       if (err) {
-//         res.status(500).send("Error retrieving data from MySQL");
-//       } else {
-//         console.log(result);
-//         res.json(result);
-//       }
-//     });
-//   };
-// });
-
 router.get("/:email", async (req, res) => {
   const { email } = req.params;
   console.log(email);
@@ -71,6 +55,16 @@ router.post("/add-customer", async (req, res) => {
   try {
     // Start a transaction
     await db.promise().beginTransaction();
+
+    const sqlQuery = "SELECT * FROM CUSTOMERS WHERE CUSTOMER_EMAIL = ?";
+    const [result] = await db.promise().query(sqlQuery, [email]);
+    console.log("result: ");
+    if (result.length > 0) {
+      await db.promise().rollback();
+      return res
+        .status(200)
+        .json({ message: "User already Exists", success: false });
+    }
 
     // Insert into Table 1
     const [result1] = await db

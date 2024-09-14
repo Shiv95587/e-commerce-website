@@ -43,11 +43,12 @@ export default function SingleProductDisplay({ items, category }) {
   }
 
   function handleDecrease(e) {
-    if (prequantity > 1) setQuantity((prequantity) => prequantity - 1);
+    if (prequantity > 1)
+      setQuantity((prequantity) => parseInt(prequantity) - 1);
   }
 
   function handleIncrease(e) {
-    setQuantity((prequantity) => prequantity + 1);
+    setQuantity((prequantity) => parseInt(prequantity) + 1);
   }
 
   function hasSize(category) {
@@ -62,7 +63,7 @@ export default function SingleProductDisplay({ items, category }) {
     // Validation
     if (
       color === "Select Color" ||
-      prequantity === 0 ||
+      parseInt(prequantity) === 0 ||
       (hasSize(category) && size === "Select Size")
     ) {
       alert("fill all fields");
@@ -71,7 +72,7 @@ export default function SingleProductDisplay({ items, category }) {
 
     const res = await axios.get(`http://localhost:5000/api/products/${id}`);
     console.log("Data: ", res.data[0]);
-    if (prequantity > res.data[0].QUANTITY) {
+    if (parseInt(prequantity) > res.data[0].QUANTITY) {
       setError(1);
     } else {
       const product = {
@@ -79,7 +80,7 @@ export default function SingleProductDisplay({ items, category }) {
         img: img,
         name: name,
         price: price,
-        quantity: prequantity,
+        quantity: parseInt(prequantity),
         ...(size === "Select Size" ? {} : { size }),
         color: color,
         category: category,
@@ -89,11 +90,11 @@ export default function SingleProductDisplay({ items, category }) {
 
       console.log(existingCart);
       const existingProductIndex = existingCart.findIndex(
-        (item) => item.id === id
+        (item) => item.id === id && item.color == color && item.size === size
       );
 
       if (existingProductIndex !== -1) {
-        existingCart[existingProductIndex].quantity += prequantity;
+        existingCart[existingProductIndex].quantity += parseInt(prequantity);
       } else {
         existingCart.push(product);
       }

@@ -45,8 +45,12 @@ function CartPage() {
 
   //   handle item remove
   function handleRemoveItem(item) {
-    const updatedCart = cartItems.filter((cartItem) => cartItem.id !== item.id);
-
+    const updatedCart = cartItems.filter(
+      (cartItem) =>
+        cartItem.id !== item.id ||
+        cartItem.color !== item.color ||
+        cartItem.size !== item.size
+    );
     setCartItems(updatedCart);
     updateLocalStorage(updatedCart);
   }
@@ -101,105 +105,105 @@ function CartPage() {
     }
   }
 
-  async function handleCheckOut(e) {
-    e.preventDefault();
-
-    // Skipping payment process
-    try {
-      const products = JSON.parse(localStorage.getItem(email));
-      if (!products) {
-        console.error("No products found in local storage.");
-        return;
-      }
-
-      // Update products
-      for (let i = 0; i < products.length; ++i) {
-        const product = products[i];
-
-        // Make sure to send the necessary product details for updating
-        const res = await axios.put(
-          `http://localhost:5000/api/products/update/${product.id}`,
-          product
-        );
-        console.log("Product updated:", res.data);
-      }
-
-      // Create order text
-      let productsText = "";
-
-      for (let i = 0; i < products.length; ++i) {
-        const product = products[i];
-        productsText += `${product.quantity}x ${product.name}\n`;
-      }
-
-      console.log("Products text:", productsText);
-
-      // Create order
-      const res = await axios.post(
-        `http://localhost:5000/api/orders/${email}`,
-        {
-          productsText,
-          cartSubTotal, // Make sure `cartSubTotal` is defined in your context
-        }
-      );
-      console.log("Order created:", res.data);
-
-      // Clear local storage
-      localStorage.removeItem(email);
-      console.log("Key removed from local storage.");
-
-      // Navigate to orders page
-      navigate("/orders");
-    } catch (error) {
-      console.error("Error during checkout process:", error);
-    }
-  }
-
   // async function handleCheckOut(e) {
   //   e.preventDefault();
 
-  //   const result = await makePayment();
-  //   if (result && result.error) {
-  //     console.log("Stripe Error: ", result.error);
-  //   } else {
+  //   // Skipping payment process
+  //   try {
   //     const products = JSON.parse(localStorage.getItem(email));
-  //     try {
-  //       for (let i = 0; i < products.length; ++i) {
-  //         const product = products[i];
-
-  //         const res = await axios.put(
-  //           `http://localhost:5000/api/products/update/${product.id}`,
-  //           product
-  //         );
-  //         console.log(res);
-  //       }
-
-  //       let productsText = "";
-
-  //       for (let i = 0; i < products.length; ++i) {
-  //         const product = products[i];
-  //         productsText += `${product.quantity}x ${product.name}\n`;
-  //       }
-
-  //       console.log(productsText);
-
-  //       const res = await axios.post(
-  //         `http://localhost:5000/api/orders/${email}`,
-  //         {
-  //           productsText,
-  //           cartSubTotal,
-  //         }
-  //       );
-  //       console.log(res);
-
-  //       localStorage.removeItem(email);
-  //       console.log("Key removed from local storage.");
-  //       navigate("/orders");
-  //     } catch (error) {
-  //       console.error("Error during checkout process:", error);
+  //     if (!products) {
+  //       console.error("No products found in local storage.");
+  //       return;
   //     }
+
+  //     // Update products
+  //     for (let i = 0; i < products.length; ++i) {
+  //       const product = products[i];
+
+  //       // Make sure to send the necessary product details for updating
+  //       const res = await axios.put(
+  //         `http://localhost:5000/api/products/update/${product.id}`,
+  //         product
+  //       );
+  //       console.log("Product updated:", res.data);
+  //     }
+
+  //     // Create order text
+  //     let productsText = "";
+
+  //     for (let i = 0; i < products.length; ++i) {
+  //       const product = products[i];
+  //       productsText += `${product.quantity}x ${product.name}\n`;
+  //     }
+
+  //     console.log("Products text:", productsText);
+
+  //     // Create order
+  //     const res = await axios.post(
+  //       `http://localhost:5000/api/orders/${email}`,
+  //       {
+  //         productsText,
+  //         cartSubTotal, // Make sure `cartSubTotal` is defined in your context
+  //       }
+  //     );
+  //     console.log("Order created:", res.data);
+
+  //     // Clear local storage
+  //     localStorage.removeItem(email);
+  //     console.log("Key removed from local storage.");
+
+  //     // Navigate to orders page
+  //     navigate("/orders");
+  //   } catch (error) {
+  //     console.error("Error during checkout process:", error);
   //   }
   // }
+
+  async function handleCheckOut(e) {
+    e.preventDefault();
+
+    const result = await makePayment();
+    if (result && result.error) {
+      console.log("Stripe Error: ", result.error);
+    } else {
+      const products = JSON.parse(localStorage.getItem(email));
+      try {
+        for (let i = 0; i < products.length; ++i) {
+          const product = products[i];
+
+          const res = await axios.put(
+            `http://localhost:5000/api/products/update/${product.id}`,
+            product
+          );
+          console.log(res);
+        }
+
+        let productsText = "";
+
+        for (let i = 0; i < products.length; ++i) {
+          const product = products[i];
+          productsText += `${product.quantity}x ${product.name}\n`;
+        }
+
+        console.log(productsText);
+
+        const res = await axios.post(
+          `http://localhost:5000/api/orders/${email}`,
+          {
+            productsText,
+            cartSubTotal,
+          }
+        );
+        console.log(res);
+
+        localStorage.removeItem(email);
+        console.log("Key removed from local storage.");
+        navigate("/orders");
+      } catch (error) {
+        console.error("Error during checkout process:", error);
+      }
+    }
+  }
   return (
     <div>
       <PageHeader title={"Shop Cart"} currentPage={"Cart Page"} />

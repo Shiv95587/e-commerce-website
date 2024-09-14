@@ -20,7 +20,7 @@ const ContactUs = () => {
         <div className="container">
           <div className="row">
             <div className="col-md-8 offset-md-2">
-              <form>
+              <form className=".contact-form">
                 <div className="form-group">
                   <label htmlFor="name">Name</label>
                   <input
@@ -48,7 +48,7 @@ const ContactUs = () => {
                     placeholder="Your Message"
                   ></textarea>
                 </div>
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="btn contact-btn-primary">
                   Send Message
                 </button>
               </form>
@@ -57,7 +57,7 @@ const ContactUs = () => {
         </div>
       </section>
 
-      <footer className="bg-primary text-white text-center py-3">
+      <footer className="text-white text-center contact-footer">
         <p>&copy; 2024 [Your Company Name]. All rights reserved.</p>
       </footer>
     </div>

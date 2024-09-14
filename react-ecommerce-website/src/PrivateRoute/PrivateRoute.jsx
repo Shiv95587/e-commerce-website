@@ -8,9 +8,11 @@ function PrivateRoute({ children }) {
   const location = useLocation();
 
   console.log("Locat: ", location);
-  if (email.length !== 0) {
+  if (email.length !== 0 || localStorage.getItem("userEmail")) {
+    console.log("hi I am child");
     return children;
   }
+  console.log("I am going to log");
 
   return <Navigate to={"/login"} state={{ from: location }} replace></Navigate>;
 }

@@ -15,12 +15,15 @@ import customerRoute from "./controllers/customer.controller.js";
 import reviewRoute from "./controllers/review.controller.js";
 import orderRoute from "./controllers/orders.controller.js";
 import paymentRoute from "./controllers/payments.controller.js";
+import authRoutes from "./controllers/auth.js";
+
 // Middleware
 app.use("/api/products", productRoute);
 app.use("/api/customers", customerRoute);
 app.use("/api/reviews", reviewRoute);
 app.use("/api/orders", orderRoute);
 app.use("/api/payments", paymentRoute);
+app.use("/api/auth", authRoutes);
 
 // MySQL Connection
 const db = createConnection({

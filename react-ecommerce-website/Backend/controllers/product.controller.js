@@ -122,13 +122,12 @@ async function deleteProduct(id, color, size, category) {
       await db.promise().query(`DELETE FROM PRODUCTS WHERE PRODUCT_ID=?`, [id]);
     }
 
-    // Commit the transaction
     await db.promise().commit();
     console.log("Product deleted successfully");
   } catch (error) {
     await db.promise().rollback();
     console.error("Error deleting product: ", error);
-    throw error; // Rethrow the error to handle it outside of this function
+    throw error;
   }
 }
 
