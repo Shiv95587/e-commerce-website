@@ -4,7 +4,7 @@ ShopCart is a modern e-commerce web application built with React.js, Node.js, Ex
 
 ## Features
 
-- **User Authentication and Authorization**: Secure user registration, login, authentication, and role-based access control for authorized actions.
+- **User Authentication and Authorization**: Secure user registration, login, authentication, and role-based access control for authorized actions using JWT tokens.
 - **Product Browsing**: Browse products by categories, search for specific items, and view detailed product descriptions.
 - **Shopping Cart**: Add, update, or remove products from the shopping cart.
 - **Checkout Process**: A smooth checkout experience with multiple payment options using Stripe.
