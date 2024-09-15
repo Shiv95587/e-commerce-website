@@ -29,11 +29,45 @@ router.post("/create-checkout-session", async (req, res, next) => {
     payment_method_types: ["card"],
     line_items: lineItems,
     mode: "payment",
-    success_url: "http://localhost:5173/orders",
+    success_url: "http://localhost:5173/payment-confirmation",
     cancel_url: "http://localhost:5173/cancel",
   });
 
   res.json({ id: session.id });
 });
+
+router.post(
+  "/webhook",
+  express.json({ type: "application/json" }),
+  (request, response) => {
+    const event = request.body;
+
+    // Handle the event
+    switch (event.type) {
+      case "payment_intent.succeeded": {
+        const paymentIntent = event.data.object;
+        console.log("payment intent: ", paymentIntent);
+        // Then define and call a method to handle the successful payment intent.
+        // handlePaymentIntentSucceeded(paymentIntent);
+        break;
+      }
+      case "payment_method.attached": {
+        const paymentMethod = event.data.object;
+        console.log("payment method: ", paymentMethod);
+        // Then define and call a method to handle the successful attachment of a PaymentMethod.
+        // handlePaymentMethodAttached(paymentMethod);
+        break;
+      }
+      // ... handle other event types
+      default: {
+        console.log(`Unhandled event type ${event.type}`);
+        return response.status(400).end();
+      }
+    }
+
+    // Return a response to acknowledge receipt of the event
+    response.json({ received: true });
+  }
+);
 
 export default router;

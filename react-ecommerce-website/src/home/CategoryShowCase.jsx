@@ -3,76 +3,6 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 const title = "Our Products";
 
-// const ProductData = [
-//   {
-//     imgUrl:
-//       "https://assets.adidas.com/images/h_840,f_auto,q_auto:sensitive,fl_lossy,c_fill,g_auto/4feb20f4d990407cb4f1a88a0040b212_9366/Relaxed_Strap-Back_Hat_Black_BH7137_01_standard.jpg",
-//     cate: "Caps",
-//     title: "Relaxed Strap-Back Hat",
-//     brand: "Nike",
-//     price: "$30",
-//     id: 18,
-//   },
-//   {
-//     imgUrl:
-//       "https://assets.adidas.com/images/h_840,f_auto,q_auto:sensitive,fl_lossy,c_fill,g_auto/ac09bb56249b43158485aca1007cc1ef_9366/Excel_Backpack_Black_EX6933_01_standard.jpg",
-//     cate: "Bags",
-//     title: "Excel Backpack",
-
-//     brand: "D&J Bags",
-//     price: "$62",
-//     id: 73,
-//   },
-
-//   {
-//     imgUrl:
-//       "https://assets.adidas.com/images/h_840,f_auto,q_auto:sensitive,fl_lossy,c_fill,g_auto/a520df1b51384c00af9caca100489f04_9366/Trefoil_Backpack_Black_EX6752_01_standard.jpg",
-//     cate: "Bags",
-//     title: "Trefoil Backpack",
-//     price: "$65",
-//     id: 69,
-//   },
-
-//   {
-//     imgUrl:
-//       "https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/fbaf991a78bc4896a3e9ad7800abcec6_9366/Ultraboost_22_Shoes_Black_GZ0127_01_standard.jpg",
-//     cate: "Shoes",
-//     title: "ULTRABOOST 22 SHOES",
-//     brand: "Nike",
-//     price: "$420",
-//     id: 22,
-//   },
-
-//   {
-//     imgUrl:
-//       "https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/ec81fbd781fe4aa3a8cead230019c192_9366/AEROREADY_Designed_2_Move_Feelready_Sport_Tee_Burgundy_H30268_21_model.jpg",
-//     cate: "Shirts",
-//     title: "MOVE FEELREADY SPORT TEE",
-//     brand: "Zaara",
-//     price: "$14",
-//     id: 41,
-//   },
-
-//   {
-//     imgUrl:
-//       "https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/9c7058d8677742ac8519ac3f009cdcf4_9366/Tiro_21_Track_Pants_Black_GH7305_21_model.jpg",
-//     cate: "Pants",
-//     title: "TIRO TRACK PANTS",
-//     brand: "Gucci",
-//     price: "$146",
-//     id: 50,
-//   },
-//   {
-//     imgUrl:
-//       "https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/9a8256bb7ca34da49ff8ad5600bb2812_9366/4DFWD_Pulse_Shoes_White_Q46221_01_standard.jpg",
-//     cate: "Shoes",
-//     title: "4DFWD PULSE SHOES",
-//     brand: "Bata",
-//     price: "$226",
-//     id: 29,
-//   },
-// ];
-
 function CategoryShowCase() {
   const [allItems, setAllItems] = useState([]);
   const [items, setItems] = useState([]);
@@ -139,7 +69,11 @@ function CategoryShowCase() {
                       <img src={product.PRODUCT_IMAGE} alt="" />
                       <div className="course-category">
                         <div className="course-cate">
-                          <a href="#">{product.PRODUCT_CATEGORY}</a>
+                          <a
+                            href={`/shop/${product.PRODUCT_CATEGORY.toLowerCase()}`}
+                          >
+                            {product.PRODUCT_CATEGORY}
+                          </a>
                         </div>
                       </div>
                     </div>

@@ -27,12 +27,14 @@ import About from "./about/About.jsx";
 import Contact from "./contact/Contact.jsx";
 import ErrorNotFound from "./not-found.jsx";
 import PaymentCancel from "./paymentCancel.jsx";
+import PaymentConfirmationPage from "./shop/PaymentConfirmationPage.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
       { path: "/", element: <Home /> },
+      { path: "/payment-confirmation", element: <PaymentConfirmationPage /> },
       { path: "/404", element: <ErrorNotFound /> },
       // { path: "/blog", element: <Blog /> },
       {

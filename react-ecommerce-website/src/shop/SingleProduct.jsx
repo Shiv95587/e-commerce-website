@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
-import ProductDisplay from "./ProductDisplay";
+// import ProductDisplay from "./ProductDisplay";
 import Review from "./Review";
 import axios from "axios";
 import SingleProductDisplay from "./SingleProductDisplay";

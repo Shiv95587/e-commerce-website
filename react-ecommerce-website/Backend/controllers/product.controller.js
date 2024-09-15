@@ -36,7 +36,7 @@ router.get("/popular-products", async (req, res, next) => {
       })
     );
 
-    console.log("Popular products on backend are: ", items);
+    // console.log("Popular products on backend are: ", items);
     res.status(200).json({
       items: items,
       message: "Successfully retrieved popular products",

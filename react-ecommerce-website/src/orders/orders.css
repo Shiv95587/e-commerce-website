@@ -1,8 +1,17 @@
-.table thead {
-  background-color: #f16126; /* Apply background color */
-  color: white; /* Set text color */
+/* orders.css */
+.table-custom thead {
+  background-color: #f16126 !important; /* Custom background color for the header */
+}
+
+.table-custom thead th {
+  color: white !important; /* Ensure the text color remains white in the header */
+}
+
+.table-custom tbody td {
+  color: #212529; /* Keep table body text color default or set it to desired color */
 }
 
 .table thead th {
-  color: white !important; /* Ensure text color stays white */
+  background-color: #f16126;
+  color: white;
 }

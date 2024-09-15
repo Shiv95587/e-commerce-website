@@ -17,8 +17,7 @@
 }
 
 .contact-us-btn-primary:hover {
-  background-color: #e6c700;
-  border-color: #e6c700;
+  box-shadow: 0px 2px 8px #e6c700;
 }
 
 .contact-us-form {

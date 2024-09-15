@@ -50,9 +50,15 @@ const ContactUs = () => {
                   ></textarea>
                 </div>
                 <div className="d-flex flex-row justify-content-center">
-                  <button
+                  {/* <button
                     type="submit"
                     className="contact-us-btn contact-us-btn-primary"
+                  >
+                    Send Message
+                  </button> */}
+                  <button
+                    type="submit"
+                    className="contact-us-btn contact-us-btn-primary lab-btn"
                   >
                     Send Message
                   </button>

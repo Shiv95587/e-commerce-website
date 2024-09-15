@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { LoginContext } from "../Contexts/LoginContext";
 import { AuthContext } from "../Contexts/AuthProvider";
+import "./review.css";
 import axios from "axios";
 
 const reviewTitle = "Add a Review";
@@ -117,17 +118,21 @@ function Review({ prodid }) {
             >
               {reviews.map((review, i) => (
                 <li key={i}>
-                  <div className="post-thumb">
+                  <div className="post-thumb d-flex flex-row justify-content-center align-items-center">
+                    <div className="avatar-circle">
+                      {reviews[i].CUSTOMER_FIRSTNAME.charAt(0)}
+                    </div>
                     {/* <img src={review.imgUrl} alt="" /> */}
-                    <img src={ReviewList[i].imgUrl} alt="" />
+                    {/* <img src={ReviewList[i].imgUrl} alt="" /> */}
                   </div>
                   <div className="post-content">
                     <div className="entry-meta">
                       <div className="posted-on">
                         <a href="#">
-                          {review.CUSTOMER_FIRSTNAME +
+                          {/* {review.CUSTOMER_FIRSTNAME +
                             " " +
-                            review.CUSTOMER_LASTNAME}
+                            review.CUSTOMER_LASTNAME} */}
+                          {review.CUSTOMER_EMAIL}
                         </a>
                         <p>{review.REVIEW_DATE}</p>
                       </div>

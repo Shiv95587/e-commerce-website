@@ -49,6 +49,7 @@ function ProductCards({ GridList, products }) {
                   </Link>
                 </h5>
                 {/* TODO: Add Rating Feature */}
+
                 <p className="productRating">Rating</p>
                 <h6>${product.PRODUCT_PRICE}</h6>
               </div>
