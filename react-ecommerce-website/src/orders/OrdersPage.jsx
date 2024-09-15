@@ -26,7 +26,7 @@ function OrdersPage() {
     };
 
     fetchData(); // Call the async function
-  }, []); // The empty dependency array ensures that the effect runs once after the initial render
+  }, [email]); // The empty dependency array ensures that the effect runs once after the initial render
 
   return (
     <div>

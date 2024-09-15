@@ -7,7 +7,6 @@ function AuthProvider({ children }) {
   const [email, setEmail] = useState("");
   const [authToken, setAuthToken] = useState(null);
   const [loading, setLoading] = useState(true);
-
   const createUser = async (fullName, email, password) => {
     const words = fullName.split(" ");
     const firstName = words[0];

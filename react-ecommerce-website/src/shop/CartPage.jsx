@@ -302,7 +302,7 @@ function CartPage() {
                     {/* <div className="calculate-shipping"> */}
                     {/* <h3>Calculate Shipping</h3> */}
 
-                    <div className="cart-overview">
+                    <div className="cart-overview pl-2">
                       <h3>Cart Total</h3>
                       <ul className="lab-ul">
                         <li>

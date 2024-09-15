@@ -17,6 +17,36 @@ router.get("/", (req, res) => {
   });
 });
 
+router.get("/popular-products", async (req, res, next) => {
+  const categories = ["Shoes", "Pants", "Bags", "Caps", "Shirts"];
+  const items = [];
+
+  try {
+    // Use Promise.all to execute queries in parallel
+    await Promise.all(
+      categories.map(async (category) => {
+        const [results] = await db.promise().query(
+          `SELECT * FROM PRODUCTS P 
+             JOIN PRODUCT_IMAGES PI ON P.PRODUCT_ID = PI.PRODUCT_ID 
+             WHERE PRODUCT_CATEGORY = ? 
+             LIMIT 2`,
+          [category]
+        );
+        items.push(...results); // Spread the results into the items array
+      })
+    );
+
+    console.log("Popular products on backend are: ", items);
+    res.status(200).json({
+      items: items,
+      message: "Successfully retrieved popular products",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
 //---------------POST REQUESTS-------------------
 router.post("/", async (req, res) => {
   console.log(req.body);

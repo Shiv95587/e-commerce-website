@@ -45,12 +45,9 @@ function Shop({ someprops }) {
         const apiUrl = "http://localhost:5000/api/products/";
         const response = await axios.get(apiUrl);
 
-        // Handle the successful response
-
         setData(response.data);
         setProducts(response.data);
       } catch (error) {
-        // Handle errors
         console.log(error);
       }
     };
@@ -148,7 +145,6 @@ function Shop({ someprops }) {
                   paginate={paginate}
                   activePage={currentPage}
                 />
-                hello
               </article>
             </div>
             {/* Right Side */}
