@@ -1,6 +1,5 @@
 import express from "express";
 import { db } from "../server.js";
-import { useParams } from "react-router-dom";
 import fs from "fs";
 import { table } from "console";
 const router = express.Router();

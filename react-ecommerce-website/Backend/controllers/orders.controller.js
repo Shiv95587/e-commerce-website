@@ -1,6 +1,5 @@
 import express from "express";
 import { db } from "../server.js";
-import { useParams } from "react-router-dom";
 
 const router = express.Router();
 
