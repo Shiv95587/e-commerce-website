@@ -70,7 +70,7 @@ function Shop({ someprops }) {
 
   const [selectedCategory, setSelectedCategory] = useState("All");
   // const menuItems = [...new Set(data.map((product) => product.category))];
-  const menuItems = ["Shirts", "Shoes", "Pants", "Bags", "Caps"];
+  const menuItems = ["Shoes", "Pants", "Bags", "Caps", "Shirts"];
   const filterItem = useCallback(
     (curcat) => {
       if (curcat === "All") {

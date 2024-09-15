@@ -4,6 +4,7 @@ import PageHeader from "../components/PageHeader";
 import shivProfile from "./shiv-profile.jpg";
 import lovProfile from "./lov-profile.jpg";
 import missionImage from "./mission.jpg";
+import rohitProfile from "./rohit-profile.jpg";
 const AboutUs = () => {
   return (
     <>
@@ -59,9 +60,9 @@ const AboutUs = () => {
               </div>
               <div className="col-md-4 text-center">
                 <div className="team-member">
-                  <a href="src\about\shiv-profile.jpg" target="_blank">
+                  <a href="src\about\rohit-profile.jpg" target="_blank">
                     <img
-                      src={shivProfile}
+                      src={rohitProfile}
                       alt="Shiv Kumar"
                       className="img-fluid rounded-circle mb-3"
                     />

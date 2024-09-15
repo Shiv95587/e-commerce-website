@@ -50,7 +50,15 @@ function ProductCards({ GridList, products }) {
                 </h5>
                 {/* TODO: Add Rating Feature */}
 
-                <p className="productRating">Rating</p>
+                {/* <p className="productRating">Rating</p> */}
+                <p className="rating">
+                  <i className="icofont-star"></i>
+                  <i className="icofont-star"></i>
+                  <i className="icofont-star"></i>
+                  <i className="icofont-star"></i>
+                  <i className="icofont-star"></i>
+                  {/* <span>{ratingsCount}</span> */}
+                </p>
                 <h6>${product.PRODUCT_PRICE}</h6>
               </div>
             </div>
@@ -92,7 +100,15 @@ function ProductCards({ GridList, products }) {
                   </Link>
                 </h5>
                 {/* TODO: Add Rating Feature */}
-                <p className="productRating">Rating</p>
+                {/* <p className="productRating">Rating</p> */}
+                <p className="rating">
+                  <i className="icofont-star"></i>
+                  <i className="icofont-star"></i>
+                  <i className="icofont-star"></i>
+                  <i className="icofont-star"></i>
+                  <i className="icofont-star"></i>
+                  {/* <span>{ratingsCount}</span> */}
+                </p>
                 <h6>${product.PRODUCT_PRICE}</h6>
               </div>
             </div>

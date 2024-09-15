@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-const title = "Our Products";
+const title = "Popular Products";
 
 function CategoryShowCase() {
   const [allItems, setAllItems] = useState([]);
@@ -51,9 +51,9 @@ function CategoryShowCase() {
               <li onClick={() => setItems(allItems)}>All</li>
               <li onClick={() => filterItem("Shoes")}>Shoes</li>
               <li onClick={() => filterItem("Bags")}>Bags</li>
-              <li onClick={() => filterItem("Shirts")}>Shirts</li>
               <li onClick={() => filterItem("Caps")}>Caps</li>
               <li onClick={() => filterItem("Pants")}>Pants</li>
+              <li onClick={() => filterItem("Shirts")}>Shirts</li>
             </ul>
           </div>
         </div>
