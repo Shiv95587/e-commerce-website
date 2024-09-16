@@ -19,7 +19,9 @@ function PaymentConfirmationPage() {
         for (let i = 0; i < products.length; ++i) {
           const product = products[i];
           await axios.put(
-            `http://localhost:5000/api/products/update/${product.id}`,
+            `${import.meta.env.VITE_BACKEND_URL}/api/products/update/${
+              product.id
+            }`,
             product
           );
         }
@@ -30,13 +32,16 @@ function PaymentConfirmationPage() {
           productsText += `${product.quantity}x ${product.name}\n`;
         }
 
-        await axios.post(`http://localhost:5000/api/orders/${email}`, {
-          productsText,
-          cartSubTotal: products.reduce(
-            (total, item) => total + item.price * item.quantity,
-            0
-          ),
-        });
+        await axios.post(
+          `${import.meta.env.VITE_BACKEND_URL}/api/orders/${email}`,
+          {
+            productsText,
+            cartSubTotal: products.reduce(
+              (total, item) => total + item.price * item.quantity,
+              0
+            ),
+          }
+        );
 
         localStorage.removeItem(email);
         navigate("/orders");

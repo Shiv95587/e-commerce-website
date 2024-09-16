@@ -11,7 +11,7 @@ function CategoryShowCase() {
     async function fetchPopularItems() {
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/products/popular-products"
+          `${import.meta.env.VITE_BACKEND_URL}/api/products/popular-products`
         );
         console.log(res.data.items);
         setAllItems(res.data.items);

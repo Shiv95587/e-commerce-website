@@ -13,7 +13,9 @@ function OrdersPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const apiUrl = `http://localhost:5000/api/orders/${email}`;
+        const apiUrl = `${
+          import.meta.env.VITE_BACKEND_URL
+        }/api/orders/${email}`;
         const response = await axios.get(apiUrl);
         setOrders(response.data);
       } catch (error) {

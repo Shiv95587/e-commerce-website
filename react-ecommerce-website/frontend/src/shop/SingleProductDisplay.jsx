@@ -70,7 +70,9 @@ export default function SingleProductDisplay({ items, category }) {
       return;
     }
 
-    const res = await axios.get(`http://localhost:5000/api/products/${id}`);
+    const res = await axios.get(
+      `${import.meta.env.VITE_BACKEND_URL}/api/products/${id}`
+    );
     console.log("Data: ", res.data[0]);
     if (parseInt(prequantity) > res.data[0].QUANTITY) {
       setError(1);

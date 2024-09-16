@@ -22,7 +22,7 @@ function SingleProduct() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const apiUrl = `http://localhost:5000/api/products/${id}`;
+        const apiUrl = `${import.meta.env.VITE_BACKEND_URL}/api/products/${id}`;
         const response = await axios.get(apiUrl);
         console.log("res is " + response.data);
         setProduct(response.data);

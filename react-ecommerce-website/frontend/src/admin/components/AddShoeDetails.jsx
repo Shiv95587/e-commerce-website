@@ -44,7 +44,7 @@ function AddShoeDetails() {
         category: "Shoes",
       };
       const res = await axios.post(
-        "http://localhost:5000/api/products/add-shoe",
+        `${import.meta.env.VITE_BACKEND_URL}/api/products/add-shoe`,
         data
       );
       console.log("Response", await res.json());

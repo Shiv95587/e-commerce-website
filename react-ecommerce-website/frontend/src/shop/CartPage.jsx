@@ -78,7 +78,9 @@ function CartPage() {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/payments/create-checkout-session",
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/api/payments/create-checkout-session`,
         {
           method: "POST",
           headers: headers,

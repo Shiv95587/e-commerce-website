@@ -8,36 +8,36 @@ import axios from "axios";
 
 const reviewTitle = "Add a Review";
 
-let ReviewList = [
-  {
-    imgUrl: "/src/assets/images/instructor/01.jpg",
-    imgAlt: "Client thumb",
-    name: "Ganelon Boileau",
-    date: "Posted on Jun 10, 2022 at 6:57 am",
-    desc: "Enthusiast build innovativ initiatives before lonterm high-impact awesome theme seo psd porta monetize covalent leadership after without resource.",
-  },
-  {
-    imgUrl: "/src/assets/images/instructor/02.jpg",
-    imgAlt: "Client thumb",
-    name: "Morgana Cailot",
-    date: "Posted on Jun 10, 2022 at 6:57 am",
-    desc: "Enthusiast build innovativ initiatives before lonterm high-impact awesome theme seo psd porta monetize covalent leadership after without resource.",
-  },
-  {
-    imgUrl: "/src/assets/images/instructor/03.jpg",
-    imgAlt: "Client thumb",
-    name: "Telford Bois",
-    date: "Posted on Jun 10, 2022 at 6:57 am",
-    desc: "Enthusiast build innovativ initiatives before lonterm high-impact awesome theme seo psd porta monetize covalent leadership after without resource.",
-  },
-  {
-    imgUrl: "/src/assets/images/instructor/04.jpg",
-    imgAlt: "Client thumb",
-    name: "Cher Daviau",
-    date: "Posted on Jun 10, 2022 at 6:57 am",
-    desc: "Enthusiast build innovativ initiatives before lonterm high-impact awesome theme seo psd porta monetize covalent leadership after without resource.",
-  },
-];
+// let ReviewList = [
+//   {
+//     imgUrl: "/src/assets/images/instructor/01.jpg",
+//     imgAlt: "Client thumb",
+//     name: "Ganelon Boileau",
+//     date: "Posted on Jun 10, 2022 at 6:57 am",
+//     desc: "Enthusiast build innovativ initiatives before lonterm high-impact awesome theme seo psd porta monetize covalent leadership after without resource.",
+//   },
+//   {
+//     imgUrl: "/src/assets/images/instructor/02.jpg",
+//     imgAlt: "Client thumb",
+//     name: "Morgana Cailot",
+//     date: "Posted on Jun 10, 2022 at 6:57 am",
+//     desc: "Enthusiast build innovativ initiatives before lonterm high-impact awesome theme seo psd porta monetize covalent leadership after without resource.",
+//   },
+//   {
+//     imgUrl: "/src/assets/images/instructor/03.jpg",
+//     imgAlt: "Client thumb",
+//     name: "Telford Bois",
+//     date: "Posted on Jun 10, 2022 at 6:57 am",
+//     desc: "Enthusiast build innovativ initiatives before lonterm high-impact awesome theme seo psd porta monetize covalent leadership after without resource.",
+//   },
+//   {
+//     imgUrl: "/src/assets/images/instructor/04.jpg",
+//     imgAlt: "Client thumb",
+//     name: "Cher Daviau",
+//     date: "Posted on Jun 10, 2022 at 6:57 am",
+//     desc: "Enthusiast build innovativ initiatives before lonterm high-impact awesome theme seo psd porta monetize covalent leadership after without resource.",
+//   },
+// ];
 
 function Review({ prodid }) {
   // const [reviewShow, setReviewShow] = useSearchParams(true);
@@ -53,7 +53,7 @@ function Review({ prodid }) {
   async function handleSubmit(e) {
     e.preventDefault();
     const r = await axios.post(
-      `http://localhost:5000/api/reviews/${email}/${prodid}`,
+      `${import.meta.env.VITE_BACKEND_URL}/api/reviews/${email}/${prodid}`,
       { value, desc }
     );
     console.log(r);
@@ -64,7 +64,7 @@ function Review({ prodid }) {
     async function fetchReviews() {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/reviews/${prodid}`
+          `${import.meta.env.VITE_BACKEND_URL}/api/reviews/${prodid}`
         );
         console.log("Reviews of prod is: ", res.data.data);
         if (res.data.success) setReviews(res.data.data);

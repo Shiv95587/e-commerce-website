@@ -22,7 +22,7 @@ function Banner() {
     const fetchData = async () => {
       try {
         // Replace the URL with the actual endpoint you want to request
-        const apiUrl = "http://localhost:5000/api/products/";
+        const apiUrl = `${import.meta.env.VITE_BACKEND_URL}/api/products/`;
         const response = await axios.get(apiUrl);
 
         // Handle the successful response

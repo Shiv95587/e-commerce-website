@@ -34,7 +34,7 @@ function AddCapDetails() {
     };
 
     const res = await axios.post(
-      "http://localhost:5000/api/products/add-cap",
+      `${import.meta.env.VITE_BACKEND_URL}/api/products/add-cap`,
       data
     );
     console.log(res);

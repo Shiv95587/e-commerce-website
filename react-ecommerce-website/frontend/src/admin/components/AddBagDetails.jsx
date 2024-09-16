@@ -33,7 +33,7 @@ function AddBagDetails() {
     };
 
     const res = await axios.post(
-      "http://localhost:5000/api/products/add-bag",
+      `${import.meta.env.VITE_BACKEND_URL}/api/products/add-bag`,
       data
     );
     console.log(res);
