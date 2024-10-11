@@ -2,6 +2,12 @@
 
 ShopCart is a modern e-commerce web application built with React.js, Node.js, Express.js, and MySQL. The platform allows users to browse and purchase products across various categories seamlessly.
 
+## Demo
+
+Check out the video walkthrough of the project here:
+
+[![ShopCart Demo](https://img.youtube.com/vi/2iO0FqrdunQ/0.jpg)](https://youtu.be/2iO0FqrdunQ)
+
 ## Features
 
 - **User Authentication and Authorization**: Secure user registration, login, authentication, and role-based access control for authorized actions using JWT tokens.
