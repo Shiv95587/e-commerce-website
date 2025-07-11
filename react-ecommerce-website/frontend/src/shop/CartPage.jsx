@@ -73,7 +73,7 @@ function CartPage() {
     const products = JSON.parse(localStorage.getItem(email));
     console.log(products);
 
-    const body = { products };
+    const body = { products, email };
     const headers = { "Content-Type": "application/json" };
 
     try {
