@@ -25,6 +25,8 @@ router.post("/create-checkout-session", async (req, res, next) => {
     quantity: product.quantity,
   }));
   const DOMAIN = process.env.FRONTEND_DOMAIN;
+  console.log("✅ FRONTEND_DOMAIN:", process.env.FRONTEND_DOMAIN);
+
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
     line_items: lineItems,
