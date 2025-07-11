@@ -24,14 +24,14 @@ router.post("/create-checkout-session", async (req, res, next) => {
     },
     quantity: product.quantity,
   }));
-
+  const DOMAIN = process.env.FRONTEND_DOMAIN;
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
     line_items: lineItems,
     mode: "payment",
-    success_url: "http://localhost:5173/payment-confirmation",
-    cancel_url: "http://localhost:5173/cancel",
-    // customer_email: email,
+    success_url: `${DOMAIN}/payment-confirmation`,
+    cancel_url: `${DOMAIN}/cancel`,
+    customer_email: email,
   });
 
   res.json({ id: session.id });
