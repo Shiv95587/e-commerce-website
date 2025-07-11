@@ -20,14 +20,16 @@ router.get("/:email", async (req, res) => {
   try {
     await db.promise().beginTransaction();
 
-    const [result] = await db
-      .promise()
-      .query("SELECT * FROM orders WHERE CUSTOMER_EMAIL = ?", [email]);
+    const [result] = await db.promise().query(
+      `SELECT * FROM orders 
+         WHERE CUSTOMER_EMAIL = ? 
+         ORDER BY STR_TO_DATE(ORDER_TIME, '%m/%d/%Y, %r') DESC`,
+      [email]
+    );
 
     console.log("Hi My orders are\n", result);
 
     await db.promise().commit();
-
     res.status(200).send(result);
   } catch (error) {
     await db.promise().rollback();

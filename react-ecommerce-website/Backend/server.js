@@ -7,10 +7,7 @@ dotenv.config();
 
 const app = express();
 
-const allowedOrigins = [
-  "http://localhost:3000",
-  "https://shopcart-xz49.onrender.com",
-];
+const allowedOrigins = [process.env.FRONTEND_DOMAIN];
 
 app.use(
   cors({
