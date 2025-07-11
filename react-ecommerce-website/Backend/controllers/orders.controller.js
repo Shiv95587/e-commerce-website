@@ -23,7 +23,7 @@ router.get("/:email", async (req, res) => {
     const [result] = await db.promise().query(
       `SELECT * FROM orders 
          WHERE CUSTOMER_EMAIL = ? 
-         ORDER BY ORDER_NO DESC`, // 👈 sort by ORDER_NO in descending order
+         ORDER BY ORDER_ID DESC`, // 👈 sort by ORDER_NO in descending order
       [email]
     );
 
