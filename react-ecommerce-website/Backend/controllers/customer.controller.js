@@ -23,7 +23,7 @@ router.get("/:email", async (req, res) => {
     // starting a transaction
     await db.promise().beginTransaction();
 
-    const sqlQuery = "SELECT * FROM CUSTOMERS WHERE CUSTOMER_EMAIL = ?";
+    const sqlQuery = "SELECT * FROM customers WHERE CUSTOMER_EMAIL = ?";
     const [results] = await db.promise().query(sqlQuery, [email]);
     console.log(results);
     // commiting the transaction
@@ -54,7 +54,7 @@ router.post("/add-customer", async (req, res) => {
     // Start a transaction
     await db.promise().beginTransaction();
 
-    const sqlQuery = "SELECT * FROM CUSTOMERS WHERE CUSTOMER_EMAIL = ?";
+    const sqlQuery = "SELECT * FROM customers WHERE CUSTOMER_EMAIL = ?";
     const [result] = await db.promise().query(sqlQuery, [email]);
     console.log("result: ");
     if (result.length > 0) {
@@ -68,7 +68,7 @@ router.post("/add-customer", async (req, res) => {
     const [result1] = await db
       .promise()
       .query(
-        "INSERT INTO CUSTOMERS (CUSTOMER_EMAIL, CUSTOMER_FIRSTNAME,CUSTOMER_LASTNAME, PASSWORD) VALUES (?, ?,?,?)",
+        "INSERT INTO customers (CUSTOMER_EMAIL, CUSTOMER_FIRSTNAME,CUSTOMER_LASTNAME, PASSWORD) VALUES (?, ?,?,?)",
         [email, firstName, lastName, password]
       );
     // Commit the transaction

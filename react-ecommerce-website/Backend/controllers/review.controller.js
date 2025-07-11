@@ -11,7 +11,7 @@ function getDate() {
 }
 
 router.get("/", (req, res) => {
-  const sql = "SELECT * FROM REVIEWS";
+  const sql = "SELECT * FROM reviews";
   db.query(sql, (err, result) => {
     if (err) {
       res.status(500).send("Error retrieving data from MySQL");
@@ -26,7 +26,7 @@ router.get("/check-review", async (req, res, next) => {
 
   try {
     const alreadyReviewedQuery =
-      "SELECT COUNT(*) AS count FROM REVIEWS WHERE CUSTOMER_EMAIL = ? AND PRODUCT_ID = ?";
+      "SELECT COUNT(*) AS count FROM reviews WHERE CUSTOMER_EMAIL = ? AND PRODUCT_ID = ?";
     const [rows] = await db
       .promise()
       .query(alreadyReviewedQuery, [custemail, prodid]);
@@ -62,7 +62,7 @@ router.get("/:productId", async (req, res) => {
     const [result] = await db
       .promise()
       .query(
-        "SELECT * FROM REVIEWS R JOIN CUSTOMERS C ON R.CUSTOMER_EMAIL = C.CUSTOMER_EMAIL WHERE R.PRODUCT_ID = ?",
+        "SELECT * FROM reviews R JOIN customers C ON R.CUSTOMER_EMAIL = C.CUSTOMER_EMAIL WHERE R.PRODUCT_ID = ?",
         [productId]
       );
     console.log(result);
@@ -71,17 +71,17 @@ router.get("/:productId", async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Data received FROM REVIEWS table successfully",
+      message: "Data received FROM reviews table successfully",
       data: result,
     });
   } catch (error) {
     // Rollback the transaction if an error occurs
     await db.promise().rollback();
 
-    console.error("Error RECEIVING data into REVIEWS table:", error);
+    console.error("Error RECEIVING data into reviews table:", error);
     res.status(500).json({
       success: false,
-      message: "Error RECEIVING data into REVIEWS table",
+      message: "Error RECEIVING data into reviews table",
     });
   }
 });
@@ -98,7 +98,7 @@ router.post("/:custemail/:prodid", async (req, res) => {
     // starting a transaction
     await db.promise().beginTransaction();
     const sqlQuery =
-      "INSERT INTO REVIEWS (CUSTOMER_EMAIL, PRODUCT_ID, RATING,REVIEW_DESCRIPTION,REVIEW_DATE) VALUES(?,?,?,?,?)";
+      "INSERT INTO reviews (CUSTOMER_EMAIL, PRODUCT_ID, RATING,REVIEW_DESCRIPTION,REVIEW_DATE) VALUES(?,?,?,?,?)";
     const [results] = await db
       .promise()
       .query(sqlQuery, [custemail, prodid, rating, desc, date]);
@@ -108,16 +108,16 @@ router.post("/:custemail/:prodid", async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Data inserted into REVIEWS table successfully",
+      message: "Data inserted into reviews table successfully",
     });
   } catch (error) {
     // Rollback the transaction if an error occurs
     await db.promise().rollback();
 
-    console.error("Error inserting data into REVIEWS table:", error);
+    console.error("Error inserting data into reviews table:", error);
     res.status(500).json({
       success: false,
-      message: "Error inserting data into REVIEWS table",
+      message: "Error inserting data into reviews table",
     });
   }
 });

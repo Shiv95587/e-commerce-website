@@ -1,6 +1,9 @@
 import express, { json } from "express";
 import cors from "cors";
 import { createConnection } from "mysql2";
+import fs from "fs";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 
@@ -31,6 +34,10 @@ const db = createConnection({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
+  ssl: {
+    ca: Buffer.from(process.env.DB_CA_CERT, "base64").toString("ascii"),
+  },
 });
 
 db.connect((err) => {
@@ -61,7 +68,8 @@ app.use((err, req, res, next) => {
 // });
 
 // Start server
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

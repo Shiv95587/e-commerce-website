@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get("/", (req, res) => {
   const sql =
-    "SELECT * FROM PRODUCTS P JOIN PRODUCT_IMAGES PI ON P.PRODUCT_ID = PI.PRODUCT_ID";
+    "SELECT * FROM products P JOIN product_images PI ON P.PRODUCT_ID = PI.PRODUCT_ID";
   db.query(sql, (err, result) => {
     if (err) {
       res.status(500).send("Error retrieving data from MySQL" + err);
@@ -25,10 +25,11 @@ router.get("/popular-products", async (req, res, next) => {
     await Promise.all(
       categories.map(async (category) => {
         const [results] = await db.promise().query(
-          `SELECT * FROM PRODUCTS P 
-             JOIN PRODUCT_IMAGES PI ON P.PRODUCT_ID = PI.PRODUCT_ID 
-             WHERE PRODUCT_CATEGORY = ? 
-             LIMIT 2`,
+          `SELECT *
+          FROM products P 
+          JOIN product_images PI ON P.PRODUCT_ID = PI.PRODUCT_ID 
+          WHERE LOWER(P.PRODUCT_CATEGORY) = LOWER(?) 
+          LIMIT 2`,
           [category]
         );
         items.push(...results); // Spread the results into the items array
@@ -51,7 +52,7 @@ router.post("/", async (req, res) => {
   console.log(req.body);
 
   // const sql =
-  //   "INSERT INTO PRODUCTS (PRODUCT_TITLE,PRODUCT_PRICE, PRODUCT_CATEGORY) VALUES(?)";
+  //   "INSERT INTO products (PRODUCT_TITLE,PRODUCT_PRICE, PRODUCT_CATEGORY) VALUES(?)";
   // const values = [req.body.title, req.body.price, req.body.category];
 
   // db.query(sql, [values], (err, result) => {
@@ -76,7 +77,7 @@ router.get("/:id", async (req, res) => {
     await db.promise().beginTransaction();
     const [[{ PRODUCT_CATEGORY: categoryOfProduct }]] = await db
       .promise()
-      .query(`SELECT PRODUCT_CATEGORY FROM PRODUCTS WHERE PRODUCT_ID = ?`, [
+      .query(`SELECT PRODUCT_CATEGORY FROM products WHERE PRODUCT_ID = ?`, [
         id,
         2,
       ]);
@@ -85,19 +86,19 @@ router.get("/:id", async (req, res) => {
     let sqlQuery;
     switch (categoryOfProduct) {
       case "Shoes":
-        sqlQuery = `SELECT * FROM PRODUCTS JOIN Shoes ON SHOES.PRODUCT_ID = PRODUCTS.PRODUCT_ID JOIN PRODUCT_IMAGES ON PRODUCT_IMAGES.PRODUCT_ID = PRODUCTS.PRODUCT_ID WHERE PRODUCTS.PRODUCT_ID = ?`;
+        sqlQuery = `SELECT * FROM products JOIN shoes ON shoes.PRODUCT_ID = products.PRODUCT_ID JOIN product_images ON product_images.PRODUCT_ID = products.PRODUCT_ID WHERE products.PRODUCT_ID = ?`;
         break;
       case "Pants":
-        sqlQuery = `SELECT * FROM PRODUCTS JOIN PANTS ON PANTS.PRODUCT_ID = PRODUCTS.PRODUCT_ID JOIN PRODUCT_IMAGES ON PRODUCT_IMAGES.PRODUCT_ID = PRODUCTS.PRODUCT_ID WHERE PRODUCTS.PRODUCT_ID = ?`;
+        sqlQuery = `SELECT * FROM products JOIN pants ON pants.PRODUCT_ID = products.PRODUCT_ID JOIN product_images ON product_images.PRODUCT_ID = products.PRODUCT_ID WHERE products.PRODUCT_ID = ?`;
         break;
       case "Shirts":
-        sqlQuery = `SELECT * FROM PRODUCTS JOIN SHIRTS ON SHIRTS.PRODUCT_ID = PRODUCTS.PRODUCT_ID JOIN PRODUCT_IMAGES ON PRODUCT_IMAGES.PRODUCT_ID = PRODUCTS.PRODUCT_ID WHERE PRODUCTS.PRODUCT_ID = ?`;
+        sqlQuery = `SELECT * FROM products JOIN shirts ON shirts.PRODUCT_ID = products.PRODUCT_ID JOIN product_images ON product_images.PRODUCT_ID = products.PRODUCT_ID WHERE products.PRODUCT_ID = ?`;
         break;
       case "Bags":
-        sqlQuery = `SELECT * FROM PRODUCTS JOIN BAGS ON BAGS.PRODUCT_ID = PRODUCTS.PRODUCT_ID JOIN PRODUCT_IMAGES ON PRODUCT_IMAGES.PRODUCT_ID = PRODUCTS.PRODUCT_ID WHERE PRODUCTS.PRODUCT_ID = ?`;
+        sqlQuery = `SELECT * FROM products JOIN bags ON bags.PRODUCT_ID = products.PRODUCT_ID JOIN product_images ON product_images.PRODUCT_ID = products.PRODUCT_ID WHERE products.PRODUCT_ID = ?`;
         break;
       case "Caps":
-        sqlQuery = `SELECT * FROM PRODUCTS JOIN CAPS ON CAPS.PRODUCT_ID = PRODUCTS.PRODUCT_ID JOIN PRODUCT_IMAGES ON PRODUCT_IMAGES.PRODUCT_ID = PRODUCTS.PRODUCT_ID WHERE PRODUCTS.PRODUCT_ID = ?`;
+        sqlQuery = `SELECT * FROM products JOIN caps ON caps.PRODUCT_ID = products.PRODUCT_ID JOIN product_images ON product_images.PRODUCT_ID = products.PRODUCT_ID WHERE products.PRODUCT_ID = ?`;
     }
 
     const [results] = await db.promise().query(sqlQuery, [id]);
@@ -132,23 +133,27 @@ async function deleteProduct(id, color, size, category) {
     // Conditionally handle the presence of size
     if (size) {
       sqlQuery = `DELETE FROM ?? WHERE PRODUCT_ID=? AND COLOR=? AND SIZE=?`;
-      result = await db.promise().query(sqlQuery, [category, id, color, size]);
+      result = await db
+        .promise()
+        .query(sqlQuery, [category.toLowerCase(), id, color, size]);
     } else {
       sqlQuery = `DELETE FROM ?? WHERE PRODUCT_ID=? AND COLOR=?`;
-      result = await db.promise().query(sqlQuery, [category, id, color]);
+      result = await db
+        .promise()
+        .query(sqlQuery, [category.toLowerCase(), id, color]);
     }
 
     // Check if any other rows exist with the same PRODUCT_ID
     const [result2] = await db
       .promise()
       .query(`SELECT COUNT(*) as count FROM ?? WHERE PRODUCT_ID=?`, [
-        category,
+        category.toLowerCase(),
         id,
       ]);
 
-    // If no rows exist, delete from PRODUCTS table
+    // If no rows exist, delete from products table
     if (result2[0].count === 0) {
-      await db.promise().query(`DELETE FROM PRODUCTS WHERE PRODUCT_ID=?`, [id]);
+      await db.promise().query(`DELETE FROM products WHERE PRODUCT_ID=?`, [id]);
     }
 
     await db.promise().commit();
@@ -163,7 +168,7 @@ async function deleteProduct(id, color, size, category) {
 // --------------PUT REQUESTS---------------
 router.put("/update/:id", async (req, res) => {
   const productId = parseInt(req.params.id);
-  const category = req.body.category;
+  const category = req.body.category.toLowerCase();
   const size = req.body.size;
   const quantity = req.body.quantity;
   const color = req.body.color;
@@ -173,13 +178,13 @@ router.put("/update/:id", async (req, res) => {
 
     const [result] = await db
       .promise()
-      .query("SELECT * FROM PRODUCTS WHERE PRODUCT_ID = ?", [productId]);
+      .query("SELECT * FROM products WHERE PRODUCT_ID = ?", [productId]);
 
     if (result.length === 0) {
       res.status(404).json({ message: "Item not found" });
     } else {
-      const tableName = category.toUpperCase();
-      if (tableName === "BAGS" || tableName === "CAPS") {
+      const tableName = category;
+      if (tableName === "bags" || tableName === "caps") {
         const data = await db
           .promise()
           .query(
@@ -213,7 +218,7 @@ router.put("/update/:id", async (req, res) => {
           .promise()
           .query(
             `UPDATE ${tableName} SET QUANTITY = QUANTITY - ${quantity} WHERE PRODUCT_ID = ${productId} AND SIZE = ${
-              tableName !== "SHIRTS" ? size : `${size}`
+              tableName !== "shirts" ? size : `${size}`
             } AND QUANTITY >= ${quantity}`
           );
 
@@ -223,7 +228,7 @@ router.put("/update/:id", async (req, res) => {
           "SELECT QUANTITY FROM ?? WHERE PRODUCT_ID = ? AND SIZE=? AND COLOR=?";
         const [rows] = await db
           .promise()
-          .query(query2, [category, productId, size, color]);
+          .query(query2, [category.toLowerCase(), productId, size, color]);
         if (rows.length > 0) {
           const quantity = rows[0].QUANTITY;
           console.log("Quantity is: ", quantity);
@@ -262,8 +267,8 @@ router.post("/add-cap", async (req, res) => {
     const [result1] = await db
       .promise()
       .query(
-        "INSERT INTO PRODUCTS (PRODUCT_TITLE, PRODUCT_PRICE,PRODUCT_CATEGORY) VALUES (?,?,?)",
-        [title, price, category]
+        "INSERT INTO products (PRODUCT_TITLE, PRODUCT_PRICE,PRODUCT_CATEGORY) VALUES (?,?,?)",
+        [title, price, category.toLowerCase()]
       );
 
     console.log("Product id is\n");
@@ -276,7 +281,7 @@ router.post("/add-cap", async (req, res) => {
     // Insert into Table 2
     const [result2] = await db
       .promise()
-      .query(`INSERT INTO CAPS (PRODUCT_ID, COLOR, QUANTITY) VALUES (?,?,?)`, [
+      .query(`INSERT INTO caps (PRODUCT_ID, COLOR, QUANTITY) VALUES (?,?,?)`, [
         productId,
         color,
         quantity,
@@ -285,7 +290,7 @@ router.post("/add-cap", async (req, res) => {
     const [result3] = await db
       .promise()
       .query(
-        `INSERT INTO PRODUCT_IMAGES (PRODUCT_IMAGE, PRODUCT_ID) VALUES(?,?)`,
+        `INSERT INTO product_images (PRODUCT_IMAGE, PRODUCT_ID) VALUES(?,?)`,
         [img, productId]
       );
 
@@ -320,8 +325,8 @@ router.post("/add-bag", async (req, res) => {
     const [result1] = await db
       .promise()
       .query(
-        "INSERT INTO PRODUCTS (PRODUCT_TITLE, PRODUCT_PRICE,PRODUCT_CATEGORY) VALUES (?,?,?)",
-        [title, price, category]
+        "INSERT INTO products (PRODUCT_TITLE, PRODUCT_PRICE,PRODUCT_CATEGORY) VALUES (?,?,?)",
+        [title, price, category.toLowerCase()]
       );
 
     console.log("Product id is\n");
@@ -334,7 +339,7 @@ router.post("/add-bag", async (req, res) => {
     // Insert into Table 2
     const [result2] = await db
       .promise()
-      .query(`INSERT INTO BAGS (PRODUCT_ID, COLOR, QUANTITY) VALUES (?,?,?)`, [
+      .query(`INSERT INTO bags (PRODUCT_ID, COLOR, QUANTITY) VALUES (?,?,?)`, [
         productId,
         color,
         quantity,
@@ -343,7 +348,7 @@ router.post("/add-bag", async (req, res) => {
     const [result3] = await db
       .promise()
       .query(
-        `INSERT INTO PRODUCT_IMAGES (PRODUCT_IMAGE, PRODUCT_ID) VALUES(?,?)`,
+        `INSERT INTO product_images (PRODUCT_IMAGE, PRODUCT_ID) VALUES(?,?)`,
         [img, productId]
       );
 
@@ -377,8 +382,8 @@ router.post("/add-pant", async (req, res) => {
     const [result1] = await db
       .promise()
       .query(
-        "INSERT INTO PRODUCTS (PRODUCT_TITLE, PRODUCT_PRICE,PRODUCT_CATEGORY) VALUES (?,?,?)",
-        [title, price, category]
+        "INSERT INTO products (PRODUCT_TITLE, PRODUCT_PRICE,PRODUCT_CATEGORY) VALUES (?,?,?)",
+        [title, price, category.toLowerCase()]
       );
 
     // fetching the product id from db
@@ -393,7 +398,7 @@ router.post("/add-pant", async (req, res) => {
       const [result2] = await db
         .promise()
         .query(
-          `INSERT INTO Pants (PRODUCT_ID, COLOR, SIZE, QUANTITY) VALUES (?,?,?,?)`,
+          `INSERT INTO pants (PRODUCT_ID, COLOR, SIZE, QUANTITY) VALUES (?,?,?,?)`,
           [productId, color, size[i], quantity[i]]
         );
     }
@@ -401,7 +406,7 @@ router.post("/add-pant", async (req, res) => {
     const [result3] = await db
       .promise()
       .query(
-        `INSERT INTO PRODUCT_IMAGES (PRODUCT_IMAGE, PRODUCT_ID) VALUES(?,?)`,
+        `INSERT INTO product_images (PRODUCT_IMAGE, PRODUCT_ID) VALUES(?,?)`,
         [img, productId]
       );
 
@@ -435,8 +440,8 @@ router.post("/add-shirt", async (req, res) => {
     const [result1] = await db
       .promise()
       .query(
-        "INSERT INTO PRODUCTS (PRODUCT_TITLE, PRODUCT_PRICE,PRODUCT_CATEGORY) VALUES (?,?,?)",
-        [title, price, category]
+        "INSERT INTO products (PRODUCT_TITLE, PRODUCT_PRICE,PRODUCT_CATEGORY) VALUES (?,?,?)",
+        [title, price, category.toLowerCase()]
       );
 
     // fetching the product id from db
@@ -451,7 +456,7 @@ router.post("/add-shirt", async (req, res) => {
       const [result2] = await db
         .promise()
         .query(
-          `INSERT INTO Shirts (PRODUCT_ID, COLOR, SIZE, QUANTITY) VALUES (?,?,?,?)`,
+          `INSERT INTO shirts (PRODUCT_ID, COLOR, SIZE, QUANTITY) VALUES (?,?,?,?)`,
           [productId, color, size[i], quantity[i]]
         );
     }
@@ -459,7 +464,7 @@ router.post("/add-shirt", async (req, res) => {
     const [result3] = await db
       .promise()
       .query(
-        `INSERT INTO PRODUCT_IMAGES (PRODUCT_IMAGE, PRODUCT_ID) VALUES(?,?)`,
+        `INSERT INTO product_images (PRODUCT_IMAGE, PRODUCT_ID) VALUES(?,?)`,
         [img, productId]
       );
 
@@ -494,8 +499,8 @@ router.post("/add-shoe", async (req, res) => {
     const [result1] = await db
       .promise()
       .query(
-        "INSERT INTO PRODUCTS (PRODUCT_TITLE, PRODUCT_PRICE,PRODUCT_CATEGORY) VALUES (?,?,?)",
-        [title, price, "Shoes"]
+        "INSERT INTO products (PRODUCT_TITLE, PRODUCT_PRICE,PRODUCT_CATEGORY) VALUES (?,?,?)",
+        [title, price, "shoes"]
       );
 
     // fetching the product id from db
@@ -510,7 +515,7 @@ router.post("/add-shoe", async (req, res) => {
       const [result2] = await db
         .promise()
         .query(
-          `INSERT INTO SHOES (PRODUCT_ID, COLOR, SIZE, QUANTITY) VALUES (?,?,?,?)`,
+          `INSERT INTO shoes (PRODUCT_ID, COLOR, SIZE, QUANTITY) VALUES (?,?,?,?)`,
           [productId, color, size[i], quantity[i]]
         );
     }
@@ -518,7 +523,7 @@ router.post("/add-shoe", async (req, res) => {
     const [result3] = await db
       .promise()
       .query(
-        `INSERT INTO PRODUCT_IMAGES (PRODUCT_IMAGE, PRODUCT_ID) VALUES(?,?)`,
+        `INSERT INTO product_images (PRODUCT_IMAGE, PRODUCT_ID) VALUES(?,?)`,
         [img, productId]
       );
     // Commit the transaction

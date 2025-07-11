@@ -22,3 +22,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+react-ecommerce-website/frontend/.env
+react-ecommerce-website/Backend/.env

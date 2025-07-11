@@ -10,11 +10,15 @@ function PaymentConfirmationPage() {
 
   useEffect(() => {
     const handlePostPayment = async () => {
-      const products = JSON.parse(localStorage.getItem(email));
-      if (!products) {
+      console.log("In PaymentConfirmationPage");
+
+      if (!email) return;
+      const stored = localStorage.getItem(email);
+      if (!stored) {
         return navigate("/orders");
       }
-
+      console.log("have products");
+      const products = JSON.parse(stored);
       try {
         for (let i = 0; i < products.length; ++i) {
           const product = products[i];

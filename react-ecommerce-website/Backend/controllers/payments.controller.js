@@ -8,7 +8,7 @@ dotenv.config();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 router.post("/create-checkout-session", async (req, res, next) => {
-  const { products } = req.body;
+  const { products, email } = req.body;
   if (!products || products.length === 0) {
     return res.status(400).json({ error: "No products in request body" });
   }
@@ -31,6 +31,7 @@ router.post("/create-checkout-session", async (req, res, next) => {
     mode: "payment",
     success_url: "http://localhost:5173/payment-confirmation",
     cancel_url: "http://localhost:5173/cancel",
+    // customer_email: email,
   });
 
   res.json({ id: session.id });
